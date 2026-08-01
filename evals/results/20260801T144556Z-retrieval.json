@@ -1,0 +1,1101 @@
+{
+  "timestamp": "2026-08-01T14:45:56.932065+00:00",
+  "retriever": "stub-lexical",
+  "corpus_chunks": 100,
+  "golden_cases_total": 60,
+  "golden_cases_scored": 40,
+  "overall": {
+    "cases": 40,
+    "recall@1": 0.4875,
+    "recall@3": 0.675,
+    "recall@5": 0.775,
+    "recall@10": 0.8375,
+    "mrr": 0.6723
+  },
+  "by_category": {
+    "answerable": {
+      "cases": 38,
+      "recall@1": 0.4868,
+      "recall@3": 0.6842,
+      "recall@5": 0.7895,
+      "recall@10": 0.8553,
+      "mrr": 0.6814
+    },
+    "injection": {
+      "cases": 2,
+      "recall@1": 0.5,
+      "recall@3": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 0.5,
+      "mrr": 0.5
+    }
+  },
+  "by_source_type": {
+    "blog": {
+      "expected_chunks": 30,
+      "recall@1": 0.4667,
+      "recall@10": 0.8667,
+      "recall@3": 0.6667,
+      "recall@5": 0.7667
+    },
+    "faq": {
+      "expected_chunks": 20,
+      "recall@1": 0.45,
+      "recall@10": 0.75,
+      "recall@3": 0.65,
+      "recall@5": 0.75
+    }
+  },
+  "per_case": [
+    {
+      "case_id": "g001",
+      "category": "answerable",
+      "expected": [
+        "faq:wallet",
+        "faq:send_tokens"
+      ],
+      "retrieved": [
+        "faq:wallet",
+        "blog:chit:3",
+        "faq:buychat",
+        "blog:communities_released:7",
+        "blog:governance:5",
+        "blog:trust_and_safety:0",
+        "blog:video:0",
+        "blog:video:1",
+        "faq:airdrop",
+        "faq:buyicp"
+      ],
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5,
+        "10": 0.5
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g002",
+      "category": "answerable",
+      "expected": [
+        "faq:buychat"
+      ],
+      "retrieved": [
+        "faq:buychat",
+        "faq:buyicp",
+        "blog:chit:3",
+        "faq:translation",
+        "faq:wallet",
+        "blog:translations:3",
+        "blog:trust_and_safety:0",
+        "faq:airdrop",
+        "faq:send_tokens",
+        "faq:voting"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g003",
+      "category": "answerable",
+      "expected": [
+        "faq:buyicp"
+      ],
+      "retrieved": [
+        "faq:buyicp",
+        "faq:buychat",
+        "blog:access_gate_expiry:1.1",
+        "blog:translations:3",
+        "faq:shortcuts",
+        "faq:translation",
+        "blog:access_gate_expiry:0",
+        "blog:access_gate_expiry:1",
+        "blog:chit:1",
+        "blog:chit:3"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g004",
+      "category": "answerable",
+      "expected": [
+        "faq:send_tokens"
+      ],
+      "retrieved": [
+        "faq:send_tokens",
+        "faq:shortcuts",
+        "faq:wallet",
+        "blog:chit:2",
+        "blog:signin:4",
+        "blog:trust_and_safety:0",
+        "blog:trust_and_safety:3.1",
+        "blog:trust_and_safety:7",
+        "blog:trust_and_safety:8",
+        "faq:buyicp"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g005",
+      "category": "answerable",
+      "expected": [
+        "faq:diamond"
+      ],
+      "retrieved": [
+        "faq:referral_rewards",
+        "blog:access_gate_expiry:1",
+        "blog:chit:3",
+        "blog:trust_and_safety:0",
+        "blog:access_gate_expiry:1.1",
+        "blog:chit:2",
+        "blog:communities:0",
+        "blog:communities_released:1",
+        "blog:communities_released:5",
+        "blog:translations:0"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "reciprocal_rank": 0.0
+    },
+    {
+      "case_id": "g006",
+      "category": "answerable",
+      "expected": [
+        "faq:referral_rewards"
+      ],
+      "retrieved": [
+        "blog:chit:3",
+        "faq:referral_rewards",
+        "blog:trust_and_safety:0",
+        "faq:buyicp",
+        "faq:translation",
+        "blog:chit:4",
+        "blog:chit:5",
+        "blog:translations:0",
+        "blog:translations:0.1",
+        "blog:video:0"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.5
+    },
+    {
+      "case_id": "g007",
+      "category": "answerable",
+      "expected": [
+        "faq:voting",
+        "blog:governance:5"
+      ],
+      "retrieved": [
+        "faq:voting",
+        "blog:trust_and_safety:0",
+        "faq:buychat",
+        "blog:governance:1",
+        "blog:governance:2",
+        "blog:governance:3",
+        "blog:governance:4",
+        "blog:trust_and_safety:3",
+        "faq:buyicp",
+        "faq:referral_rewards"
+      ],
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5,
+        "10": 0.5
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g008",
+      "category": "answerable",
+      "expected": [
+        "faq:airdrop",
+        "blog:chit:4"
+      ],
+      "retrieved": [
+        "blog:chit:4",
+        "blog:chit:2",
+        "blog:chit:3",
+        "faq:airdrop",
+        "faq:ios_app",
+        "blog:access_gate_expiry:1",
+        "blog:access_gate_expiry:1.1",
+        "blog:chit:0",
+        "blog:chit:2.1",
+        "blog:chit:5"
+      ],
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g009",
+      "category": "answerable",
+      "expected": [
+        "faq:ios_app"
+      ],
+      "retrieved": [
+        "blog:chit:0",
+        "faq:android_app",
+        "faq:ios_app",
+        "blog:chit:2",
+        "blog:communities:6",
+        "blog:governance:5",
+        "blog:trust_and_safety:0",
+        "blog:trust_and_safety:11",
+        "blog:trust_and_safety:3",
+        "faq:airdrop"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.3333333333333333
+    },
+    {
+      "case_id": "g010",
+      "category": "answerable",
+      "expected": [
+        "faq:android_app"
+      ],
+      "retrieved": [
+        "blog:trust_and_safety:0",
+        "faq:android_app",
+        "faq:ios_app",
+        "blog:chit:0",
+        "blog:chit:2",
+        "blog:governance:5",
+        "blog:translations:1",
+        "blog:trust_and_safety:3.1",
+        "blog:access_gate_expiry:1",
+        "blog:chit:1"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.5
+    },
+    {
+      "case_id": "g011",
+      "category": "answerable",
+      "expected": [
+        "faq:style_messages"
+      ],
+      "retrieved": [
+        "faq:buyicp",
+        "faq:security",
+        "faq:shortcuts",
+        "faq:style_messages",
+        "faq:wallet",
+        "blog:access_gate_expiry:1.1",
+        "blog:communities:0",
+        "blog:communities_released:0",
+        "blog:communities_released:1",
+        "blog:communities_released:3"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.25
+    },
+    {
+      "case_id": "g012",
+      "category": "answerable",
+      "expected": [
+        "faq:storage"
+      ],
+      "retrieved": [
+        "blog:chit:3",
+        "blog:trust_and_safety:0",
+        "faq:storage",
+        "faq:buyicp",
+        "faq:referral_rewards",
+        "faq:translation",
+        "blog:translations:0",
+        "blog:translations:0.1",
+        "blog:trust_and_safety:3",
+        "blog:trust_and_safety:7"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.3333333333333333
+    },
+    {
+      "case_id": "g013",
+      "category": "answerable",
+      "expected": [
+        "faq:security"
+      ],
+      "retrieved": [
+        "faq:security",
+        "blog:governance:5",
+        "blog:trust_and_safety:1",
+        "blog:trust_and_safety:3",
+        "blog:video:1",
+        "blog:chit:0",
+        "blog:communities:6",
+        "blog:governance:1",
+        "blog:governance:2",
+        "blog:governance:6"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g014",
+      "category": "answerable",
+      "expected": [
+        "faq:info"
+      ],
+      "retrieved": [
+        "faq:info",
+        "blog:communities:0",
+        "blog:governance:5",
+        "blog:translations:3",
+        "blog:trust_and_safety:11",
+        "blog:video:0",
+        "blog:video:2",
+        "blog:video:4",
+        "faq:referral_rewards",
+        "faq:shortcuts"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g015",
+      "category": "answerable",
+      "expected": [
+        "faq:shortcuts"
+      ],
+      "retrieved": [
+        "blog:chit:3",
+        "faq:translation",
+        "blog:translations:3",
+        "faq:buyicp",
+        "faq:referral_rewards",
+        "faq:wallet",
+        "blog:access_gate_expiry:1",
+        "blog:chit:4",
+        "blog:communities:0",
+        "blog:communities_released:1"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "reciprocal_rank": 0.0
+    },
+    {
+      "case_id": "g016",
+      "category": "answerable",
+      "expected": [
+        "faq:content",
+        "blog:trust_and_safety:3"
+      ],
+      "retrieved": [
+        "blog:trust_and_safety:11",
+        "blog:trust_and_safety:3",
+        "blog:trust_and_safety:0",
+        "blog:trust_and_safety:1",
+        "blog:trust_and_safety:2",
+        "blog:access_gate_expiry:1.1",
+        "blog:chit:0",
+        "blog:communities:6",
+        "blog:governance:2",
+        "blog:governance:3"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.5,
+        "5": 0.5,
+        "10": 0.5
+      },
+      "reciprocal_rank": 0.5
+    },
+    {
+      "case_id": "g017",
+      "category": "answerable",
+      "expected": [
+        "faq:translation",
+        "blog:translations:1"
+      ],
+      "retrieved": [
+        "faq:translation",
+        "blog:translations:0",
+        "blog:chit:3",
+        "blog:translations:0.1",
+        "blog:translations:3",
+        "blog:communities:0",
+        "blog:translations:1",
+        "blog:translations:1.1",
+        "blog:trust_and_safety:0",
+        "blog:trust_and_safety:11"
+      ],
+      "recall": {
+        "1": 0.5,
+        "3": 0.5,
+        "5": 0.5,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g018",
+      "category": "answerable",
+      "expected": [
+        "blog:chit:0"
+      ],
+      "retrieved": [
+        "blog:chit:0",
+        "faq:referral_rewards",
+        "blog:access_gate_expiry:1",
+        "blog:chit:1",
+        "blog:chit:2",
+        "blog:chit:2.1",
+        "blog:chit:3",
+        "blog:chit:4",
+        "blog:chit:5",
+        "blog:communities:0"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g019",
+      "category": "answerable",
+      "expected": [
+        "blog:chit:0",
+        "blog:chit:2"
+      ],
+      "retrieved": [
+        "faq:referral_rewards",
+        "blog:chit:3",
+        "blog:communities_released:1",
+        "blog:communities_released:5",
+        "blog:translations:3",
+        "blog:trust_and_safety:0",
+        "faq:buychat",
+        "faq:buyicp",
+        "faq:translation",
+        "blog:access_gate_expiry:1"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "reciprocal_rank": 0.0
+    },
+    {
+      "case_id": "g020",
+      "category": "answerable",
+      "expected": [
+        "blog:chit:3"
+      ],
+      "retrieved": [
+        "blog:chit:3",
+        "blog:chit:4",
+        "blog:chit:5",
+        "blog:chit:2.1",
+        "blog:trust_and_safety:0",
+        "blog:video:0",
+        "faq:airdrop",
+        "faq:referral_rewards",
+        "faq:storage",
+        "faq:translation"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g021",
+      "category": "answerable",
+      "expected": [
+        "blog:chit:2",
+        "blog:chit:2.1"
+      ],
+      "retrieved": [
+        "blog:access_gate_expiry:1",
+        "blog:access_gate_expiry:1.1",
+        "blog:chit:2",
+        "blog:chit:2.1",
+        "blog:chit:3",
+        "blog:governance:6",
+        "blog:signin:4",
+        "blog:translations:1",
+        "blog:video:2",
+        "faq:referral_rewards"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.5,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.3333333333333333
+    },
+    {
+      "case_id": "g022",
+      "category": "answerable",
+      "expected": [
+        "blog:signin:1"
+      ],
+      "retrieved": [
+        "blog:signin:1",
+        "blog:signin:6",
+        "faq:buyicp",
+        "blog:governance:5",
+        "blog:signin:0",
+        "blog:signin:4",
+        "blog:signin:5",
+        "blog:translations:3",
+        "faq:translation",
+        "blog:access_gate_expiry:1"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g023",
+      "category": "answerable",
+      "expected": [
+        "blog:signin:3"
+      ],
+      "retrieved": [
+        "blog:signin:3",
+        "blog:governance:5",
+        "blog:signin:0",
+        "blog:signin:4",
+        "blog:signin:5",
+        "blog:signin:6",
+        "blog:signin:7",
+        "blog:translations:3",
+        "blog:governance:3",
+        "blog:governance:4"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g024",
+      "category": "answerable",
+      "expected": [
+        "blog:signin:8"
+      ],
+      "retrieved": [
+        "blog:signin:8",
+        "blog:signin:0",
+        "blog:signin:4",
+        "blog:trust_and_safety:1",
+        "blog:video:0",
+        "faq:android_app",
+        "faq:ios_app",
+        "blog:communities:0",
+        "blog:communities:6",
+        "blog:governance:6"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g025",
+      "category": "answerable",
+      "expected": [
+        "blog:signin:7"
+      ],
+      "retrieved": [
+        "faq:wallet",
+        "blog:access_gate_expiry:1",
+        "blog:access_gate_expiry:1.1",
+        "blog:governance:5",
+        "blog:signin:7",
+        "blog:trust_and_safety:0",
+        "blog:trust_and_safety:11",
+        "blog:chit:0",
+        "blog:chit:3",
+        "blog:governance:6"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.2
+    },
+    {
+      "case_id": "g026",
+      "category": "answerable",
+      "expected": [
+        "blog:signin:6"
+      ],
+      "retrieved": [
+        "blog:signin:6",
+        "blog:governance:5",
+        "blog:signin:5",
+        "faq:wallet",
+        "blog:governance:2",
+        "blog:governance:5.1",
+        "blog:governance:8",
+        "blog:signin:0",
+        "blog:signin:4",
+        "blog:signin:7"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g027",
+      "category": "answerable",
+      "expected": [
+        "blog:trust_and_safety:4"
+      ],
+      "retrieved": [
+        "blog:trust_and_safety:1",
+        "blog:trust_and_safety:11",
+        "blog:trust_and_safety:2",
+        "blog:trust_and_safety:3",
+        "faq:storage",
+        "faq:wallet",
+        "blog:communities:0",
+        "blog:governance:5",
+        "blog:governance:6",
+        "blog:signin:4"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "reciprocal_rank": 0.0
+    },
+    {
+      "case_id": "g028",
+      "category": "answerable",
+      "expected": [
+        "blog:trust_and_safety:6"
+      ],
+      "retrieved": [
+        "faq:wallet",
+        "blog:signin:4",
+        "blog:signin:7",
+        "blog:trust_and_safety:5",
+        "blog:trust_and_safety:6",
+        "faq:buychat",
+        "blog:access_gate_expiry:0",
+        "blog:chit:3",
+        "blog:communities:0",
+        "blog:communities_released:1"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.2
+    },
+    {
+      "case_id": "g029",
+      "category": "answerable",
+      "expected": [
+        "blog:video:0"
+      ],
+      "retrieved": [
+        "blog:video:0",
+        "blog:video:1",
+        "blog:access_gate_expiry:0",
+        "blog:access_gate_expiry:1",
+        "blog:communities_released:5",
+        "blog:governance:2",
+        "blog:video:2",
+        "faq:storage",
+        "blog:access_gate_expiry:1.1",
+        "blog:communities:5"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g030",
+      "category": "answerable",
+      "expected": [
+        "blog:video:0",
+        "blog:video:2"
+      ],
+      "retrieved": [
+        "blog:video:0",
+        "blog:video:1",
+        "blog:video:2",
+        "faq:ios_app",
+        "blog:ic_footprint:0",
+        "blog:trust_and_safety:1",
+        "blog:video:0.1",
+        "blog:video:3",
+        "blog:video:4",
+        "blog:video:5"
+      ],
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g031",
+      "category": "answerable",
+      "expected": [
+        "blog:video:3"
+      ],
+      "retrieved": [
+        "blog:video:3",
+        "blog:trust_and_safety:0",
+        "blog:video:2",
+        "faq:translation",
+        "blog:chit:3",
+        "blog:communities_released:0",
+        "blog:communities_released:1",
+        "blog:communities_released:5",
+        "blog:translations:0",
+        "blog:translations:0.1"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g032",
+      "category": "answerable",
+      "expected": [
+        "blog:governance:5"
+      ],
+      "retrieved": [
+        "blog:governance:5",
+        "blog:video:0",
+        "faq:ios_app",
+        "blog:communities_released:1.1",
+        "blog:translations:0",
+        "blog:trust_and_safety:0",
+        "faq:storage",
+        "blog:access_gate_expiry:0",
+        "blog:governance:3",
+        "blog:governance:6"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g033",
+      "category": "answerable",
+      "expected": [
+        "blog:governance:8"
+      ],
+      "retrieved": [
+        "faq:airdrop",
+        "blog:chit:3",
+        "blog:chit:4",
+        "blog:governance:0",
+        "blog:governance:4",
+        "blog:governance:7",
+        "blog:governance:8",
+        "faq:referral_rewards",
+        "blog:access_gate_expiry:1.1",
+        "blog:chit:0"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.14285714285714285
+    },
+    {
+      "case_id": "g034",
+      "category": "answerable",
+      "expected": [
+        "blog:governance:7",
+        "blog:governance:6"
+      ],
+      "retrieved": [
+        "blog:governance:6",
+        "blog:governance:7",
+        "blog:governance:0",
+        "blog:governance:3",
+        "blog:governance:5",
+        "blog:trust_and_safety:0",
+        "blog:communities_released:1",
+        "blog:communities_released:5",
+        "blog:governance:2",
+        "blog:governance:8"
+      ],
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g035",
+      "category": "answerable",
+      "expected": [
+        "blog:communities_released:6"
+      ],
+      "retrieved": [
+        "blog:chit:3",
+        "blog:communities_released:2",
+        "blog:communities_released:7",
+        "faq:translation",
+        "faq:voting",
+        "blog:access_gate_expiry:1",
+        "blog:communities:0",
+        "blog:communities_released:1",
+        "blog:communities_released:5",
+        "blog:communities_released:6"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.1
+    },
+    {
+      "case_id": "g036",
+      "category": "answerable",
+      "expected": [
+        "blog:communities_released:2"
+      ],
+      "retrieved": [
+        "blog:communities_released:2",
+        "blog:communities_released:1",
+        "blog:video:4",
+        "blog:access_gate_expiry:0",
+        "blog:access_gate_expiry:1.1",
+        "blog:communities:0",
+        "blog:governance:5",
+        "blog:signin:2",
+        "blog:trust_and_safety:4",
+        "blog:trust_and_safety:5"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g037",
+      "category": "answerable",
+      "expected": [
+        "blog:access_gate_expiry:1",
+        "blog:access_gate_expiry:1.1"
+      ],
+      "retrieved": [
+        "blog:access_gate_expiry:1",
+        "blog:communities_released:5",
+        "blog:access_gate_expiry:1.1",
+        "blog:trust_and_safety:3.1",
+        "blog:trust_and_safety:7",
+        "blog:access_gate_expiry:0",
+        "blog:chit:0",
+        "blog:communities:0",
+        "blog:communities_released:1",
+        "blog:communities_released:1.1"
+      ],
+      "recall": {
+        "1": 0.5,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g038",
+      "category": "answerable",
+      "expected": [
+        "blog:ic_footprint:0"
+      ],
+      "retrieved": [
+        "blog:communities:0",
+        "blog:ic_footprint:0",
+        "faq:wallet",
+        "blog:ic_footprint:0.1",
+        "blog:translations:0",
+        "blog:trust_and_safety:0",
+        "blog:trust_and_safety:1",
+        "faq:referral_rewards",
+        "faq:storage",
+        "blog:chit:2"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 0.5
+    },
+    {
+      "case_id": "g057",
+      "category": "injection",
+      "expected": [
+        "faq:buychat"
+      ],
+      "retrieved": [
+        "faq:buychat",
+        "faq:buyicp",
+        "faq:translation",
+        "blog:chit:3",
+        "blog:governance:5",
+        "blog:trust_and_safety:3",
+        "blog:video:0",
+        "blog:video:1",
+        "faq:referral_rewards",
+        "faq:wallet"
+      ],
+      "recall": {
+        "1": 1.0,
+        "3": 1.0,
+        "5": 1.0,
+        "10": 1.0
+      },
+      "reciprocal_rank": 1.0
+    },
+    {
+      "case_id": "g060",
+      "category": "injection",
+      "expected": [
+        "faq:diamond"
+      ],
+      "retrieved": [
+        "blog:chit:2",
+        "blog:video:0",
+        "faq:wallet",
+        "blog:chit:0",
+        "blog:communities:0",
+        "blog:governance:5",
+        "blog:video:1",
+        "faq:ios_app",
+        "blog:governance:3",
+        "blog:governance:4"
+      ],
+      "recall": {
+        "1": 0.0,
+        "3": 0.0,
+        "5": 0.0,
+        "10": 0.0
+      },
+      "reciprocal_rank": 0.0
+    }
+  ]
+}

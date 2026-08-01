@@ -45,8 +45,8 @@ import json
 import os
 import re
 from collections import defaultdict
-from datetime import datetime, timedelta, timezone
-from typing import Iterable
+from collections.abc import Iterable
+from datetime import UTC, datetime, timedelta
 
 from pydantic import BaseModel, Field, ValidationError
 
@@ -106,7 +106,8 @@ a wrong answer with a citation attached is worse than no answer."""
 # --- steps ------------------------------------------------------------------
 
 def load_events(path: str) -> list[dict]:
-    raw = json.load(open(path))
+    with open(path) as fh:
+        raw = json.load(fh)
     # The browser export wraps the array in a header object; a hand-rolled SDK
     # exporter will more likely hand you the bare list. Accept either.
     events = raw["events"] if isinstance(raw, dict) else raw
@@ -138,7 +139,10 @@ def build_threads(events: list[dict]) -> list[list[dict]]:
             return root["index"] if root else None
         if (rei := event.get("repliesToEventIndex")) is not None:
             parent = by_event_index.get(rei)
-            return root_of(parent, depth + 1) or (parent["index"] if parent else None)
+            if parent is None:
+                # Reply edge points outside the export (expired/gapped range).
+                return None
+            return root_of(parent, depth + 1) or parent["index"]
         return None
 
     for event in events:
@@ -156,9 +160,9 @@ def build_threads(events: list[dict]) -> list[list[dict]]:
     # Fallback: consecutive loose messages within THREAD_GAP become one thread.
     current: list[dict] = []
     for event in loose:
-        ts = datetime.fromtimestamp(event["timestamp"] / 1000, timezone.utc)
+        ts = datetime.fromtimestamp(event["timestamp"] / 1000, UTC)
         if current:
-            prev = datetime.fromtimestamp(current[-1]["timestamp"] / 1000, timezone.utc)
+            prev = datetime.fromtimestamp(current[-1]["timestamp"] / 1000, UTC)
             if ts - prev > THREAD_GAP:
                 groups[current[0]["index"]] = list(current)
                 current = []
@@ -232,7 +236,7 @@ def extract(thread: list[dict], client) -> ExtractedPair | None:
 def to_candidate(thread: list[dict], pair: ExtractedPair) -> dict:
     by_event = {m["index"]: m for m in thread}
     source = by_event.get(pair.answer_event_index) or thread[-1]
-    answered_at = datetime.fromtimestamp(source["timestamp"] / 1000, timezone.utc)
+    answered_at = datetime.fromtimestamp(source["timestamp"] / 1000, UTC)
     text = f"{pair.question}\n\n{pair.answer}"
 
     return {
@@ -252,7 +256,7 @@ def to_candidate(thread: list[dict], pair: ExtractedPair) -> dict:
             "self_contained": pair.self_contained,
             "reason": pair.reason,
             "answered_at": answered_at.isoformat(),
-            "stale": datetime.now(timezone.utc) - answered_at > timedelta(days=STALE_AFTER_DAYS),
+            "stale": datetime.now(UTC) - answered_at > timedelta(days=STALE_AFTER_DAYS),
             "thread_size": len(thread),
         },
         "provenance": {
@@ -261,7 +265,7 @@ def to_candidate(thread: list[dict], pair: ExtractedPair) -> dict:
             "root_event_index": thread[0]["index"],
             "answer_event_index": source["index"],
             # Deliberately no sender IDs: cite the message, not the person.
-            "extracted_at": datetime.now(timezone.utc).isoformat(),
+            "extracted_at": datetime.now(UTC).isoformat(),
         },
         "content_hash": hashlib.sha256(text.encode()).hexdigest()[:16],
     }
@@ -307,8 +311,7 @@ def main() -> None:
 
     os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
     with open(args.out, "w") as fh:
-        for candidate in accepted:
-            fh.write(json.dumps(candidate, ensure_ascii=False) + "\n")
+        fh.writelines(json.dumps(candidate, ensure_ascii=False) + "\n" for candidate in accepted)
 
     stale = sum(1 for c in accepted if c["meta"]["stale"])
     print(f"\nkept {len(accepted)}, rejected {rejected} -> {args.out}")

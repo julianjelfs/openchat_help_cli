@@ -20,7 +20,7 @@ import json
 import re
 import subprocess
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 FAQ_TS = "frontend/openchat-shared/src/domain/faq.ts"
@@ -51,7 +51,7 @@ class Chunk:
     provenance: dict = field(default_factory=dict)
     content_hash: str = ""
 
-    def finalise(self) -> "Chunk":
+    def finalise(self) -> Chunk:
         self.content_hash = hashlib.sha256(self.text.encode()).hexdigest()[:16]
         return self
 
@@ -122,7 +122,7 @@ def build(repo: Path) -> list[Chunk]:
     keys = parse_question_keys(repo)
     strings = json.loads((repo / EN_JSON).read_text())["faq"]
     src_meta = git_meta(repo, EN_JSON)
-    extracted_at = datetime.now(timezone.utc).isoformat()
+    extracted_at = datetime.now(UTC).isoformat()
 
     chunks: list[Chunk] = []
     for position, key in enumerate(keys):

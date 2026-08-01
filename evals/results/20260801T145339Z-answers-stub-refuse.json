@@ -1,0 +1,159 @@
+{
+  "timestamp": "2026-08-01T14:53:39.879031+00:00",
+  "answerer": "stub-refuse",
+  "grader_model": "gpt-5",
+  "overall": {
+    "cases": 5,
+    "grading_failures": 0,
+    "citation_failures": 0,
+    "must_mention_failures": 0,
+    "must_not_mention_failures": 0,
+    "axes": {
+      "grounded": {
+        "mean": 0.0,
+        "graded": 0
+      },
+      "correct": {
+        "mean": 0.0,
+        "graded": 0
+      },
+      "cited": {
+        "mean": 0.0,
+        "graded": 0
+      },
+      "appropriate_refusal": {
+        "mean": 0.0,
+        "graded": 5
+      }
+    }
+  },
+  "by_category": {
+    "answerable": {
+      "cases": 5,
+      "grading_failures": 0,
+      "citation_failures": 0,
+      "must_mention_failures": 0,
+      "must_not_mention_failures": 0,
+      "axes": {
+        "grounded": {
+          "mean": 0.0,
+          "graded": 0
+        },
+        "correct": {
+          "mean": 0.0,
+          "graded": 0
+        },
+        "cited": {
+          "mean": 0.0,
+          "graded": 0
+        },
+        "appropriate_refusal": {
+          "mean": 0.0,
+          "graded": 5
+        }
+      }
+    }
+  },
+  "per_case": [
+    {
+      "case_id": "g001",
+      "category": "answerable",
+      "refused": true,
+      "citations": [],
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": false,
+        "rationale": "The question is answerable from the corpus, but the system refused and redirected to the help channel. As a refusal, there are no factual claims or citations to assess."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g002",
+      "category": "answerable",
+      "refused": true,
+      "citations": [],
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": false,
+        "rationale": "This was an answerable FAQ-style question, but the response refused and redirected to the help channel instead of providing an answer. As a refusal, it made no factual claims and provided no citations."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g003",
+      "category": "answerable",
+      "refused": true,
+      "citations": [],
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": false,
+        "rationale": "This was marked as an answerable question, but the response refused and redirected to a help channel. Since no factual claims were made, grounded, correct, and cited are null; however, refusing an answerable question is inappropriate."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g004",
+      "category": "answerable",
+      "refused": true,
+      "citations": [],
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": false,
+        "rationale": "This was an answerable question about why a fee is charged, but the response refused and redirected to a help channel. Since no claims were made, grounding, correctness, and citation do not apply."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g005",
+      "category": "answerable",
+      "refused": true,
+      "citations": [],
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": false,
+        "rationale": "This was marked answerable, but the assistant refused and directed to the help channel instead of providing the Diamond membership benefits. Since it made no factual claims, grounding/correctness don\u2019t apply; refusal was inappropriate for this category."
+      },
+      "grading_failed": false
+    }
+  ]
+}

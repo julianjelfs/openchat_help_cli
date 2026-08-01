@@ -21,7 +21,7 @@ import hashlib
 import json
 import re
 from dataclasses import asdict, dataclass, field
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 
 from bs4 import BeautifulSoup, NavigableString, Tag
@@ -51,7 +51,7 @@ class Chunk:
     provenance: dict = field(default_factory=dict)
     content_hash: str = ""
 
-    def finalise(self) -> "Chunk":
+    def finalise(self) -> Chunk:
         self.content_hash = hashlib.sha256(self.text.encode()).hexdigest()[:16]
         return self
 
@@ -329,7 +329,7 @@ def chunk_post(post: dict, sections: list[dict]) -> list[Chunk]:
                     provenance={
                         "repo": "open-chat-labs/open-chat",
                         "path": f"{BLOG_DIR}/{post['file']}",
-                        "extracted_at": datetime.now(timezone.utc).isoformat(),
+                        "extracted_at": datetime.now(UTC).isoformat(),
                     },
                 ).finalise()
             )
