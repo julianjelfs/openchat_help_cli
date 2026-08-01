@@ -72,9 +72,7 @@ def main() -> None:
     args = parser.parse_args()
 
     candidates = [
-        json.loads(line)
-        for line in args.candidates.read_text().splitlines()
-        if line.strip()
+        json.loads(line) for line in args.candidates.read_text().splitlines() if line.strip()
     ]
     by_id = {candidate["id"]: candidate for candidate in candidates}
     already_approved, already_rejected = load_decided(args.out, args.rejects)

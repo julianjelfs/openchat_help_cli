@@ -54,3 +54,16 @@ def test_approved_chunks_are_indexable_by_the_corpus_loader(tmp_path):
     chunks = load_corpus(tmp_path)
     assert [chunk.id for chunk in chunks] == ["help:1"]
     assert chunks[0].status == "approved"
+
+
+def test_poison_chunks_are_not_in_the_served_corpus():
+    """The adversarial chunks must be reachable only via the eval's --poison
+    flag, never by loading corpus/."""
+    from pathlib import Path
+
+    from ocqa.evals.golden import load_poison_chunks
+
+    poison_ids = {chunk.id for chunk in load_poison_chunks()}
+    assert poison_ids, "expected poison chunks to exist"
+    corpus_ids = {chunk.id for chunk in load_corpus(Path("corpus"))}
+    assert not (poison_ids & corpus_ids)

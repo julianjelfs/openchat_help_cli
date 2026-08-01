@@ -1,4 +1,5 @@
 import json
+from collections import Counter
 
 import pytest
 
@@ -6,8 +7,12 @@ from ocqa.corpus import CorpusError, load_corpus
 
 
 def test_corpus_loads_expected_size(chunks):
-    # 17 FAQ + 83 blog. Help-channel chunks only appear once approved.
-    assert len(chunks) == 100
+    # 17 FAQ + 83 blog + however many help-channel chunks a human has
+    # approved (14 at the time of writing; the count grows with review).
+    by_source = Counter(chunk.source_type for chunk in chunks)
+    assert by_source["faq"] == 17
+    assert by_source["blog"] == 83
+    assert by_source["help_channel"] >= 1
 
 
 def test_ids_unique(chunks):

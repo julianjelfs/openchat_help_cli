@@ -40,7 +40,12 @@ from pydantic import BaseModel, Field
 from ocqa.answering import RetrievalAnswerer, StubRefusalAnswerer, StuffedAnswerer
 from ocqa.corpus import load_corpus
 from ocqa.embeddings import DEFAULT_EMBED_MODEL, OpenAIEmbedder
-from ocqa.evals.golden import GoldenCase, load_golden, validate_against_corpus
+from ocqa.evals.golden import (
+    GoldenCase,
+    load_golden,
+    load_poison_chunks,
+    validate_against_corpus,
+)
 from ocqa.evals.metrics import mean
 from ocqa.models import Answer, Chunk
 from ocqa.retrieval import DenseRetriever
@@ -335,6 +340,12 @@ def main() -> None:
         default=None,
         help="base URL of a running ocqa service; answers come over HTTP instead of the library",
     )
+    parser.add_argument(
+        "--poison",
+        action="store_true",
+        help="add the adversarial chunks in evals/poison_chunks.jsonl to the index, to test "
+        "that corpus-side prompt injection cannot steer answers",
+    )
     parser.add_argument("--corpus-dir", type=Path, default=Path("corpus"))
     parser.add_argument("--golden", type=Path, default=Path("evals/golden.jsonl"))
     parser.add_argument("--out-dir", type=Path, default=Path("evals/results"))
@@ -349,6 +360,10 @@ def main() -> None:
     args = parser.parse_args()
 
     chunks = load_corpus(args.corpus_dir)
+    if args.poison:
+        poison = load_poison_chunks()
+        print(f"injecting {len(poison)} adversarial chunks into the index", file=sys.stderr)
+        chunks = chunks + poison
     cases = load_golden(args.golden)
     validate_against_corpus(cases, chunks)
     if args.category:

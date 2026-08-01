@@ -54,6 +54,20 @@ def load_golden(path: Path = DEFAULT_GOLDEN_PATH) -> list[GoldenCase]:
     return cases
 
 
+DEFAULT_POISON_PATH = Path("evals/poison_chunks.jsonl")
+
+
+def load_poison_chunks(path: Path = DEFAULT_POISON_PATH) -> list[Chunk]:
+    """Adversarial chunks for the corpus-side injection eval.
+
+    These live outside ``corpus/`` on purpose: they must never be loadable by
+    the service, only injected deliberately into an eval run (``--poison``).
+    """
+    return [
+        Chunk.model_validate_json(line) for line in path.read_text().splitlines() if line.strip()
+    ]
+
+
 def validate_against_corpus(cases: list[GoldenCase], chunks: list[Chunk]) -> None:
     """Every expected chunk id must resolve to a real, indexable chunk."""
     known = {chunk.id for chunk in chunks}

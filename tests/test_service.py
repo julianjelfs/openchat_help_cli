@@ -42,7 +42,7 @@ def test_health(chunks):
     client = make_client(chunks)
     body = client.get("/health").json()
     assert body["status"] == "ok"
-    assert body["corpus_chunks"] == 100
+    assert body["corpus_chunks"] == len(chunks)
     assert body["index_build_ms"] == 42
     assert "stub" in body["strategies"]
 
