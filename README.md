@@ -21,6 +21,7 @@ any future gain lives.
 | `corpus/faq.jsonl` | 17 |
 | `corpus/blog.jsonl` | 83 |
 | `corpus/guidelines.jsonl` | 8 |
+| `corpus/terms.jsonl` | 73 |
 | `corpus/help.jsonl` | 14 (human-approved of 20 mined) |
 
 ## Running the service
@@ -56,10 +57,22 @@ git clone --depth 1 --filter=blob:none https://github.com/open-chat-labs/open-ch
 python ingest/ingest_faq.py         --repo ./oc --out corpus/faq.jsonl
 python ingest/ingest_blog.py        --repo ./oc --out corpus/blog.jsonl
 python ingest/ingest_guidelines.py  --repo ./oc --out corpus/guidelines.jsonl
+python ingest/ingest_terms.py       --repo ./oc --out corpus/terms.jsonl
 ```
 
-Guidelines chunks are the only source with section-level citations: the page
-reads `?section=N`, so each chunk deep-links to the exact rule.
+Guidelines and terms chunks carry section-level citations: both pages read
+`?section=N`, so a chunk deep-links to the exact rule or clause group rather
+than the top of a long page. The terms ingester also reconstructs clause
+numbers ("3.1)", "4.1.2)") that exist only as CSS counters in the markup — a
+legal answer that cannot say which clause it is quoting is close to useless.
+
+**Open question for the next eval round:** the terms are 73 of 195 chunks
+(37% of the corpus) and are dense, formal and repetitive. They may crowd the
+top-5 for ordinary product questions — Schedule 2 of the terms restates the
+content standards already in `guidelines:3`, and Schedule 4 restates
+`guidelines:4`. Watch `by_source_type` recall and the `answerable` axes
+before and after; if the terms hurt more than they help, the finding gets
+written down and they come out.
 
 Help channel, from a browser IndexedDB export:
 
