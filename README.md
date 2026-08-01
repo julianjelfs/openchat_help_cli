@@ -4,6 +4,10 @@ Question answering over the OpenChat FAQs, blog posts and help-channel
 archive. Answers cite their sources, refuse when the corpus doesn't cover
 the question, and every pipeline stage is justified by a measured number.
 
+New to the project? `EXPLAINER.md` walks through how it fits together —
+what each stage is for, the vocabulary, and the lessons with the numbers
+behind them. This file is the reference; that one is the tour.
+
 ## State
 
 Ingestion, the evaluation harness (Phase 1), the whole-corpus baseline
