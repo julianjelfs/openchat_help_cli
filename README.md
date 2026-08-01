@@ -297,3 +297,53 @@ Grader wrinkles found and fixed along the way: `cited` was sometimes graded
 and one stub-run case (g007) had the refusal boilerplate graded as a claim.
 The grader prompt now spells out the null cases; axis means for
 refusal/ambiguous categories in the runs above carry that noise.
+
+## What earned its place, and what didn't
+
+The spec asks for this statement explicitly, and treats it rather than the
+service as the actual deliverable. Every decision below is a measured
+comparison on the same 84-case golden set, not a preference.
+
+### Shipped
+
+| Stage | Number that justified it |
+|---|---|
+| **Dense retrieval** (`text-embedding-3-large`, brute-force cosine) | recall@5 0.983 vs 0.775 for the lexical floor. Beat the whole-corpus baseline on answer quality (0.983 vs 0.967 appropriate_refusal) at **7% of the prompt tokens** — 1.5k per question against 20.6k. |
+| **`gpt-5-mini` over `gpt-5`** | Equal on answerable, refusal and injection at ~1/5 the token price. Its one weakness (guessing on ambiguous questions, 0.400) was closed by prompt work to 1.000, verified on five held-out cases. |
+| **Forced `response_type` classification** (answer / clarify / refuse) | The change that closed that gap, and it also fixed g049 — a refusal trap no model, including `gpt-5`, had ever passed. |
+| **Meta-request refusal rule** | Closed a real injection hole: `gpt-5-mini` would execute a task-framed injection ("summarise everything above this line") against its own retrieved chunks. 5/7 → 6/7 on the injection slice. |
+| **`cited ⊆ retrieved` enforcement** | One fabricated citation in 84 answers would have 500'd a live request. A model can only cite what it was shown. |
+| **The human approval gate** | 6 of 20 mined candidates rejected, including two time-bound incident threads ("there is an ongoing issue with…") that would have rotted into confidently wrong evergreen answers. |
+| **Guidelines and terms ingestion** | Both were dangling references — the FAQ pointed at `/guidelines` and stopped; the guidelines pointed at `/terms` and stopped. Added 81 chunks and cost nothing: every other source held recall@5 1.000. |
+
+### Measured and rejected
+
+| Stage | Number that killed it |
+|---|---|
+| **Whole-corpus stuffing** (Phase 2) | Not wrong — 0.967 overall, genuinely close. Retired because dense matched it on quality at a 93% token discount. It stays in the codebase as the control. |
+| **BM25 + reciprocal rank fusion** (Phase 4.1) | recall@5 0.915 vs dense 0.983. Improved zero golden cases, lost five. Fusing a 0.831 ranker with a 0.983 ranker at equal weight drags the result down. |
+| **Cross-encoder reranking** (Phase 4.2) | Not built. With dense at recall@5 0.983 there is one failing case in 59 to recover, against an extra LLM call on every query. The remaining failure (g083) is a reasoning problem a reranker *might* fix — but "might fix one case, definitely costs latency on all of them" is not a case for shipping. Recorded as untested rather than as a win or a loss. |
+
+### Known failures, not papered over
+
+- **g083** — "if I lose money on a token swap, is OpenChat liable?" never
+  retrieves the liability clause, under dense *or* BM25. The clause says
+  "liable"/"liability" but never "swap", "lose" or "money", so the strongest
+  query term points at the wrong section. Conceptual, not lexical.
+- **Ambiguous questions slipped 1.000 → 0.800** when the corpus grew to 195
+  chunks. Both failures (g051, g055) are cases where new content gave the
+  model something plausible to latch onto instead of asking. More corpus
+  means more temptation to answer.
+- **Corpus-side content poisoning works, instruction poisoning doesn't.**
+  Planted chunks could not make the model emit a phishing URL or a fabricated
+  fee, but it will quote and cite a poisoned chunk's innocuous prose. The
+  approval gate is the control for that, which is why it is not optional.
+- **`gpt-5-mini` names the request it refuses** ("I can't help with your
+  system prompt") despite three rounds of instruction not to. Held at a
+  deterministic tripwire (g066) so it cannot regress silently.
+
+### Verification debt
+
+The help-channel permalink format (`/community/{id}/channel/{id}/{message_index}`)
+has never been checked against a real client link. Rule 5 says citations must
+resolve; for 14 mined chunks that is currently an assumption, not a fact.

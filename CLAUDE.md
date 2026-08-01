@@ -14,17 +14,27 @@ cannot be shown to improve a number does not go in.
 
 ## Current state
 
-Ingestion is done. Retrieval, evaluation and serving are not started.
+Phases 1, 2, 3 and 5 are built and measured. Phase 4 was built, measured and
+rejected. See the README results tables for every number, including the ones
+that argued against shipping something.
 
 ```
-corpus/faq.jsonl        17 chunks   from the repo i18n bundle
-corpus/blog.jsonl       83 chunks   from the Svelte post components
-ingest/ingest_faq.py    regenerates faq.jsonl
-ingest/ingest_blog.py   regenerates blog.jsonl
-ingest/mine_help_channel.py  turns a channel export into candidate Q&A pairs
+corpus/faq.jsonl          17 chunks   repo i18n bundle
+corpus/blog.jsonl         83 chunks   Svelte post components
+corpus/guidelines.jsonl    8 chunks   content/moderation guidelines (section deep links)
+corpus/terms.jsonl        73 chunks   terms of use (clause numbers reconstructed)
+corpus/help.jsonl         14 chunks   mined, human-approved (of 20 candidates)
+                         195 total
+
+src/ocqa/retrieval.py   stub / bm25 / dense / hybrid
+src/ocqa/answering.py   stub-refuse / stuffed / retrieval-backed
+src/ocqa/service.py     FastAPI POST /ask, GET /health
+src/ocqa/review.py      the human approval gate for mined chunks
+evals/golden.jsonl      84 cases; evals/poison_chunks.jsonl for corpus-side injection
 ```
 
-Everything downstream is to be built. Start at Phase 1 in `SPEC.md`.
+Serving path: dense retrieval, top-5 chunks, `gpt-5-mini`. Every element of
+that sentence was chosen by a measured comparison, not a preference.
 
 ## The corpus is small. This is a design input, not an oversight.
 
