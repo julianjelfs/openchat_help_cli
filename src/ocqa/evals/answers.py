@@ -211,13 +211,20 @@ def run_eval(answerer, grader, cases: list[GoldenCase], chunks: list[Chunk]) -> 
     known_ids = set(chunk_by_id)
 
     per_case = []
-    for case in cases:
+    for index, case in enumerate(cases, start=1):
         started = time.perf_counter()
         answer = answerer.answer(case.question)
         answer_ms = int((time.perf_counter() - started) * 1000)
         checks = deterministic_checks(case, answer, known_ids)
         cited_chunks = [chunk_by_id[cid] for cid in answer.citations if cid in chunk_by_id]
         grade = grader.grade(case, answer, cited_chunks)
+        print(
+            f"[{index}/{len(cases)}] {case.id} {case.category}: "
+            f"answer {answer_ms}ms, {'refused' if answer.refused else 'answered'}, "
+            f"grade {'ok' if grade else 'FAILED'}",
+            file=sys.stderr,
+            flush=True,
+        )
         per_case.append(
             {
                 "case_id": case.id,
@@ -346,7 +353,9 @@ def main() -> None:
 
     from openai import OpenAI
 
-    client = OpenAI()
+    # Bounded per-request timeout: the SDK default is 600s per attempt, which
+    # turns one stalled connection into a silent half-hour hang.
+    client = OpenAI(timeout=180.0)
     if args.endpoint:
         answerer = HTTPAnswerer(args.endpoint, args.strategy, max_chunks=args.max_chunks)
     elif args.strategy == "dense":

@@ -105,11 +105,13 @@ the siblings carry overlapping content and r@3 recovers to 0.933.
 `appropriate_refusal` — was the answer/refuse/clarify decision right for the
 category:
 
-| strategy | answerable (38) | refusal (12) | ambiguous (5) | injection (5) | overall |
-|---|---|---|---|---|---|
-| stub-refuse (floor) | 0.000 | 1.000 | 0.000 | 0.600 | 0.250 |
-| stuffed (`gpt-5`, whole corpus in prompt) | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 |
-| dense (`gpt-5`, top-5 retrieved chunks) | 1.000 | 0.917 | 1.000 | 1.000 | 0.983 |
+| strategy / answer model | answerable (38) | refusal (12) | ambiguous (5) | injection (5) | overall | mean latency |
+|---|---|---|---|---|---|---|
+| stub-refuse (floor) | 0.000 | 1.000 | 0.000 | 0.600 | 0.250 | — |
+| stuffed / `gpt-5` (whole corpus in prompt) | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 | 8.2s |
+| dense / `gpt-5` (top-5 chunks) | 1.000 | 0.917 | 1.000 | 1.000 | 0.983 | 9.5s |
+| dense / `gpt-5` via live HTTP service | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 | 9.3s |
+| dense / `gpt-5-mini` | 1.000 | 0.917 | **0.400** | 1.000 | 0.933 | 6.6s |
 
 Content axes for the stuffed strategy on answerable cases: grounded 0.947,
 correct 0.974, cited 1.000. Zero fabricated citations, zero parse failures,
@@ -119,6 +121,22 @@ injection cases.
 Content axes on answerable cases, stuffed vs dense: grounded 0.947 / 0.947,
 correct 0.974 / 0.974, cited 1.000 / 0.974. Statistically the same answer
 quality from 5 chunks as from the whole corpus.
+
+**Phase 5 acceptance: met.** The harness run against the live HTTP service
+(`--endpoint`) passed all five injection cases, produced zero fabricated
+citations, and added negligible latency over the library path. The two
+`gpt-5` dense rows also bracket the run-to-run variance on the refusal
+traps: 10–11 of 12, same strategy, different runs — those cases sit at the
+model's decision boundary.
+
+**Model choice, measured (the "do we really need gpt-5?" question):**
+`gpt-5-mini` matches `gpt-5` on answerable, refusal and injection at roughly
+a fifth of the token price and 30% lower latency — and then gives the whole
+gap back on ambiguous questions, where it guesses a reading and answers
+confidently (2/5 appropriate vs 5/5). Clarify-before-answering is a
+first-class behaviour in this service, so `gpt-5` stays the default;
+`gpt-5-mini` is the right choice only if that behaviour is prompt-tuned back
+in and re-measured, or if the deployment can tolerate guessed readings.
 
 **Phase 3 finding: dense retrieval beats the stuffed control.** Same or
 better on every quality axis (notably 11/12 vs 10/12 on the refusal traps —
