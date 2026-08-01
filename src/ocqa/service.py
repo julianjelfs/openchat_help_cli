@@ -38,7 +38,7 @@ from ocqa.answering import Answerer, RetrievalAnswerer, StubRefusalAnswerer, Stu
 from ocqa.corpus import load_corpus
 from ocqa.models import Chunk, Citation
 
-DEFAULT_STRATEGY = "dense"
+DEFAULT_STRATEGY = "hybrid"
 
 logger = logging.getLogger("ocqa.service")
 
@@ -75,18 +75,19 @@ def build_state(
 ) -> ServiceState:
     from openai import OpenAI
 
-    from ocqa.embeddings import DEFAULT_EMBED_MODEL, OpenAIEmbedder
-    from ocqa.retrieval import DenseRetriever
+    from ocqa.retrieval import build_retriever
 
     started = time.perf_counter()
     chunks = load_corpus(corpus_dir)
     client = OpenAI()
-    retriever = DenseRetriever(
-        chunks, OpenAIEmbedder(client, model=embed_model or DEFAULT_EMBED_MODEL)
-    )
+    dense = build_retriever("dense", chunks, client, embed_model)
+    hybrid = build_retriever("hybrid", chunks, client, embed_model)
     answerers: dict[str, Answerer] = {
+        "hybrid": RetrievalAnswerer(
+            client, hybrid, model=answer_model, reasoning_effort=reasoning_effort
+        ),
         "dense": RetrievalAnswerer(
-            client, retriever, model=answer_model, reasoning_effort=reasoning_effort
+            client, dense, model=answer_model, reasoning_effort=reasoning_effort
         ),
         "stuffed": StuffedAnswerer(
             client, chunks, model=answer_model, reasoning_effort=reasoning_effort

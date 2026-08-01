@@ -24,10 +24,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from ocqa.corpus import load_corpus
-from ocqa.embeddings import DEFAULT_EMBED_MODEL, OpenAIEmbedder
+from ocqa.embeddings import DEFAULT_EMBED_MODEL
 from ocqa.evals.golden import load_golden, validate_against_corpus
 from ocqa.evals.metrics import mean, recall_at_k, reciprocal_rank
-from ocqa.retrieval import DenseRetriever, StubLexicalRetriever
+from ocqa.retrieval import build_retriever
 
 K_VALUES = (1, 3, 5, 10)
 
@@ -129,7 +129,9 @@ def print_summary(report: dict) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Deterministic retrieval eval")
-    parser.add_argument("--strategy", choices=["stub", "dense"], default="dense")
+    parser.add_argument(
+        "--strategy", choices=["stub", "bm25", "dense", "hybrid"], default="hybrid"
+    )
     parser.add_argument("--embed-model", default=DEFAULT_EMBED_MODEL)
     parser.add_argument("--corpus-dir", type=Path, default=Path("corpus"))
     parser.add_argument("--golden", type=Path, default=Path("evals/golden.jsonl"))
@@ -140,14 +142,14 @@ def main() -> None:
     cases = load_golden(args.golden)
     validate_against_corpus(cases, chunks)
 
-    if args.strategy == "dense":
-        # Embedding calls happen only on cache misses; with a warm cache this
-        # command still runs offline in seconds.
+    # Embedding calls happen only on cache misses; with a warm cache the
+    # dense and hybrid strategies still run offline in seconds.
+    client = None
+    if args.strategy in {"dense", "hybrid"}:
         from openai import OpenAI
 
-        retriever = DenseRetriever(chunks, OpenAIEmbedder(OpenAI(), model=args.embed_model))
-    else:
-        retriever = StubLexicalRetriever(chunks)
+        client = OpenAI()
+    retriever = build_retriever(args.strategy, chunks, client, args.embed_model)
     report = run_eval(retriever, cases, chunks)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)

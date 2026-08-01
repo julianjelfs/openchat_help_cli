@@ -179,3 +179,57 @@ def test_citations_are_filtered_to_retrieved_chunks(tmp_path):
 
     assert result.citations == ["faq:wallet"]
     assert answerer.dropped_citations == 1
+
+
+def test_bm25_finds_exact_jargon_dense_would_miss():
+    """The case for hybrid: an identifier that appears verbatim in one chunk."""
+    from ocqa.retrieval import BM25Retriever
+
+    corpus = [
+        chunk("faq:a", "The Pawt token index canister id is kbvhp-rqaaa-aaaak-aflnq-cai."),
+        chunk("faq:b", "Tokens can be sent from your wallet to any address."),
+        chunk("faq:c", "Diamond membership unlocks extra features."),
+    ]
+    top = BM25Retriever(corpus).retrieve("kbvhp-rqaaa-aaaak-aflnq-cai", k=3)
+    assert top[0][0].id == "faq:a"
+    assert top[0][1] > 0
+
+
+def test_bm25_ignores_unknown_terms():
+    from ocqa.retrieval import BM25Retriever
+
+    corpus = [chunk("faq:a", "alpha beta"), chunk("faq:b", "gamma delta")]
+    assert all(score == 0 for _, score in BM25Retriever(corpus).retrieve("zzz", k=2))
+
+
+def test_rrf_promotes_chunks_both_retrievers_rank():
+    """A chunk ranked 2nd by both should beat one ranked 1st by only one."""
+    from ocqa.retrieval import HybridRetriever
+
+    agreed, dense_only, lex_only = (
+        chunk("c:agreed", "x"),
+        chunk("c:dense", "y"),
+        chunk("c:lex", "z"),
+    )
+
+    class Fake:
+        def __init__(self, ordered):
+            self.ordered = ordered
+
+        def retrieve(self, question, k=10):
+            return [(c, 1.0) for c in self.ordered][:k]
+
+    hybrid = HybridRetriever(Fake([dense_only, agreed]), Fake([lex_only, agreed]))
+    assert next(c.id for c, _ in hybrid.retrieve("q", k=3)) == "c:agreed"
+
+
+def test_hybrid_dedupes_across_retrievers():
+    from ocqa.retrieval import HybridRetriever
+
+    shared = chunk("c:1", "x")
+
+    class Fake:
+        def retrieve(self, question, k=10):
+            return [(shared, 1.0)]
+
+    assert len(HybridRetriever(Fake(), Fake()).retrieve("q", k=5)) == 1

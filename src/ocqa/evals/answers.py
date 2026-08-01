@@ -39,7 +39,7 @@ from pydantic import BaseModel, Field
 
 from ocqa.answering import RetrievalAnswerer, StubRefusalAnswerer, StuffedAnswerer
 from ocqa.corpus import load_corpus
-from ocqa.embeddings import DEFAULT_EMBED_MODEL, OpenAIEmbedder
+from ocqa.embeddings import DEFAULT_EMBED_MODEL
 from ocqa.evals.golden import (
     GoldenCase,
     load_golden,
@@ -48,7 +48,7 @@ from ocqa.evals.golden import (
 )
 from ocqa.evals.metrics import mean
 from ocqa.models import Answer, Chunk
-from ocqa.retrieval import DenseRetriever
+from ocqa.retrieval import build_retriever
 
 GRADER_MODEL = "gpt-5"
 
@@ -327,7 +327,9 @@ def print_summary(report: dict) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="LLM-graded answer eval")
-    parser.add_argument("--strategy", choices=["stub", "stuffed", "dense"], default="stuffed")
+    parser.add_argument(
+        "--strategy", choices=["stub", "stuffed", "dense", "bm25", "hybrid"], default="hybrid"
+    )
     parser.add_argument("--answer-model", default="gpt-5")
     parser.add_argument("--grader-model", default=GRADER_MODEL)
     parser.add_argument("--embed-model", default=DEFAULT_EMBED_MODEL)
@@ -382,8 +384,8 @@ def main() -> None:
     client = OpenAI(timeout=180.0)
     if args.endpoint:
         answerer = HTTPAnswerer(args.endpoint, args.strategy, max_chunks=args.max_chunks)
-    elif args.strategy == "dense":
-        retriever = DenseRetriever(chunks, OpenAIEmbedder(client, model=args.embed_model))
+    elif args.strategy in {"dense", "bm25", "hybrid"}:
+        retriever = build_retriever(args.strategy, chunks, client, args.embed_model)
         answerer = RetrievalAnswerer(
             client,
             retriever,
