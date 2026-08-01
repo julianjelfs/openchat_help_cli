@@ -20,7 +20,8 @@ any future gain lives.
 |---|---|
 | `corpus/faq.jsonl` | 17 |
 | `corpus/blog.jsonl` | 83 |
-| help channel | mining pipeline built, not yet run |
+| `corpus/guidelines.jsonl` | 8 |
+| `corpus/help.jsonl` | 14 (human-approved of 20 mined) |
 
 ## Running the service
 
@@ -52,9 +53,13 @@ uv run eval-answers --strategy dense --endpoint http://127.0.0.1:8000
 
 ```bash
 git clone --depth 1 --filter=blob:none https://github.com/open-chat-labs/open-chat.git oc
-python ingest/ingest_faq.py  --repo ./oc --out corpus/faq.jsonl
-python ingest/ingest_blog.py --repo ./oc --out corpus/blog.jsonl
+python ingest/ingest_faq.py         --repo ./oc --out corpus/faq.jsonl
+python ingest/ingest_blog.py        --repo ./oc --out corpus/blog.jsonl
+python ingest/ingest_guidelines.py  --repo ./oc --out corpus/guidelines.jsonl
 ```
+
+Guidelines chunks are the only source with section-level citations: the page
+reads `?section=N`, so each chunk deep-links to the exact rule.
 
 Help channel, from a browser IndexedDB export:
 
@@ -64,7 +69,14 @@ python ingest/mine_help_channel.py \
   --out corpus/help_candidates.jsonl --limit 5 --no-llm
 ```
 
-Candidates land as `status: pending` and are never indexed until approved.
+Candidates land as `status: pending` and are never indexed until approved:
+
+```bash
+uv run review-candidates          # a/r/s/q per candidate, resumable
+```
+
+Approvals are written to `corpus/help.jsonl` with `status: approved`;
+rejections are remembered so a re-mine never resurfaces them.
 
 ## Evaluation
 

@@ -71,15 +71,25 @@ NOISE = re.compile(r"^\s*(/\w+|[\W_]{1,4}|gm|ty|thanks|thx|lol|\+1)\s*$", re.IGN
 
 # --- LLM output contract ----------------------------------------------------
 
+
 class ExtractedPair(BaseModel):
     """What the model is allowed to give back. Anything else is a parse failure."""
 
     is_qa: bool = Field(description="Does this thread contain a clear question and a clear answer?")
-    question: str = Field(default="", description="Rewritten as a standalone question, no chat context")
+    question: str = Field(
+        default="", description="Rewritten as a standalone question, no chat context"
+    )
     answer: str = Field(default="", description="Rewritten as a standalone answer, no chat context")
-    answer_event_index: int | None = Field(default=None, description="Event index of the message the answer came from")
-    self_contained: bool = Field(default=False, description="False if it leans on images, links or earlier context not present")
-    is_product_question: bool = Field(default=False, description="False for price talk, chit-chat, moderation, off-topic")
+    answer_event_index: int | None = Field(
+        default=None, description="Event index of the message the answer came from"
+    )
+    self_contained: bool = Field(
+        default=False,
+        description="False if it leans on images, links or earlier context not present",
+    )
+    is_product_question: bool = Field(
+        default=False, description="False for price talk, chit-chat, moderation, off-topic"
+    )
     confidence: float = Field(default=0.0, ge=0.0, le=1.0)
     reason: str = Field(default="", description="One line: why accepted or rejected")
 
@@ -103,6 +113,7 @@ a wrong answer with a citation attached is worse than no answer."""
 
 # --- steps ------------------------------------------------------------------
 
+
 def load_events(path: str) -> list[dict]:
     with open(path) as fh:
         raw = json.load(fh)
@@ -110,7 +121,8 @@ def load_events(path: str) -> list[dict]:
     # exporter will more likely hand you the bare list. Accept either.
     events = raw["events"] if isinstance(raw, dict) else raw
     kept = [
-        e for e in events
+        e
+        for e in events
         if not e.get("deleted")
         and not e.get("isBot")
         and (e.get("text") or "").strip()
@@ -242,7 +254,8 @@ def to_candidate(thread: list[dict], pair: ExtractedPair) -> dict:
         "title": pair.question,
         "text": text,
         "url": PERMALINK.format(
-            community=COMMUNITY_ID, channel=CHANNEL_ID,
+            community=COMMUNITY_ID,
+            channel=CHANNEL_ID,
             message_index=source.get("messageIndex", source["index"]),
         ),
         "meta": {
@@ -296,7 +309,9 @@ def main() -> None:
         if pair is None:
             continue
         keep = (
-            pair.is_qa and pair.self_contained and pair.is_product_question
+            pair.is_qa
+            and pair.self_contained
+            and pair.is_product_question
             and pair.confidence >= args.min_confidence
         )
         if keep:

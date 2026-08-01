@@ -31,7 +31,7 @@ POSTS_TS = f"{BLOG_DIR}/posts.ts"
 BLOG_BASE_URL = "https://oc.app/blog"
 
 TARGET_MAX_CHARS = 1500  # split above this, at paragraph boundaries
-TARGET_MIN_CHARS = 250   # merge adjacent sections below this
+TARGET_MIN_CHARS = 250  # merge adjacent sections below this
 
 SCRIPT_STYLE_RE = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.DOTALL | re.IGNORECASE)
 SVELTE_BLOCK_RE = re.compile(r"\{[#/:@][^}]*\}")
@@ -57,6 +57,7 @@ class Chunk:
 
 
 # --- registry ---------------------------------------------------------------
+
 
 def js_date(year: int, month: int, day: int) -> date:
     """Replicate `new Date(y, m, d)`.
@@ -86,8 +87,8 @@ def parse_registry(repo: Path) -> list[dict]:
         r'slug:\s*"(?P<slug>[^"]+)",\s*'
         r'title:\s*"(?P<title>(?:[^"\\]|\\.)*)",\s*'
         r'author:\s*"(?P<author>[^"]*)",\s*'
-        r'date:\s*new Date\((?P<y>\d+),\s*(?P<m>\d+),\s*(?P<d>\d+)\),\s*'
-        r'component:\s*(?P<component>\w+),',
+        r"date:\s*new Date\((?P<y>\d+),\s*(?P<m>\d+),\s*(?P<d>\d+)\),\s*"
+        r"component:\s*(?P<component>\w+),",
         re.DOTALL,
     )
     for m in pattern.finditer(src):
@@ -95,17 +96,20 @@ def parse_registry(repo: Path) -> list[dict]:
         if component not in imports:
             print(f"  ! no import found for component {component}")
             continue
-        entries.append({
-            "slug": m.group("slug"),
-            "title": m.group("title").replace('\\"', '"'),
-            "author": m.group("author"),
-            "date": js_date(int(m.group("y")), int(m.group("m")), int(m.group("d"))),
-            "file": f"{imports[component]}.svelte",
-        })
+        entries.append(
+            {
+                "slug": m.group("slug"),
+                "title": m.group("title").replace('\\"', '"'),
+                "author": m.group("author"),
+                "date": js_date(int(m.group("y")), int(m.group("m")), int(m.group("d"))),
+                "file": f"{imports[component]}.svelte",
+            }
+        )
     return entries
 
 
 # --- svelte -> text ---------------------------------------------------------
+
 
 def preprocess(src: str) -> str:
     """Strip the bits an HTML parser has no business seeing, and rewrite the
@@ -120,14 +124,17 @@ def preprocess(src: str) -> str:
 
     src = re.sub(
         r'<Markdown\b[^>]*?text="(?P<text>.*?)"\s*/?>(?:</Markdown>)?',
-        markdown_component, src, flags=re.DOTALL,
+        markdown_component,
+        src,
+        flags=re.DOTALL,
     )
 
     # <BlogScreenshot caption="..." .../> -> keep the caption, drop the image.
     src = re.sub(
         r'<BlogScreenshot\b[^>]*?caption="(?P<caption>[^"]*)"[^>]*?/?>(?:</BlogScreenshot>)?',
         lambda m: f'<p class="figure">Screenshot: {m.group("caption")}</p>',
-        src, flags=re.DOTALL,
+        src,
+        flags=re.DOTALL,
     )
 
     # <ExternalLink href="x">y</ExternalLink> and <Link path="x">y</Link> -> <a>
@@ -239,15 +246,18 @@ def parse_sections(src: str) -> list[dict]:
         for block in blocks:
             text = tidy("".join(node_to_text(n) for n in block["nodes"]))
             if text or block["subheading"]:
-                out.append({
-                    "heading": heading,
-                    "subheading": block["subheading"],
-                    "text": text,
-                })
+                out.append(
+                    {
+                        "heading": heading,
+                        "subheading": block["subheading"],
+                        "text": text,
+                    }
+                )
     return out
 
 
 # --- chunking ---------------------------------------------------------------
+
 
 def split_long(text: str, limit: int) -> list[str]:
     """Split on blank lines, never mid-paragraph."""
@@ -354,7 +364,9 @@ def main() -> None:
         sections = parse_sections(path.read_text())
         chunks = chunk_post(post, sections)
         all_chunks.extend(chunks)
-        print(f"  {post['date']}  {post['slug']:<22} {len(sections):>2} sections -> {len(chunks):>2} chunks")
+        print(
+            f"  {post['date']}  {post['slug']:<22} {len(sections):>2} sections -> {len(chunks):>2} chunks"
+        )
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with args.out.open("w") as fh:
@@ -363,7 +375,7 @@ def main() -> None:
 
     sizes = [len(c.text) for c in all_chunks]
     print(f"\nwrote {len(all_chunks)} chunks -> {args.out}")
-    print(f"chars: min {min(sizes)}  max {max(sizes)}  mean {sum(sizes)//len(sizes)}")
+    print(f"chars: min {min(sizes)}  max {max(sizes)}  mean {sum(sizes) // len(sizes)}")
 
 
 if __name__ == "__main__":

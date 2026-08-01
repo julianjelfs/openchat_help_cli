@@ -99,11 +99,14 @@ def git_meta(repo: Path, path: str) -> dict:
     baseline rather than a true per-entry last-modified. Clone with full
     history if you want real staleness signals per FAQ.
     """
+
     def run(*args: str) -> str | None:
         try:
             out = subprocess.run(
                 ["git", "-C", str(repo), *args],
-                capture_output=True, text=True, check=True,
+                capture_output=True,
+                text=True,
+                check=True,
             )
             return out.stdout.strip() or None
         except (subprocess.CalledProcessError, FileNotFoundError):
@@ -171,7 +174,7 @@ def main() -> None:
 
     sizes = [len(c.text) for c in chunks]
     print(f"wrote {len(chunks)} chunks -> {args.out}")
-    print(f"chars: min {min(sizes)}  max {max(sizes)}  mean {sum(sizes)//len(sizes)}")
+    print(f"chars: min {min(sizes)}  max {max(sizes)}  mean {sum(sizes) // len(sizes)}")
 
 
 if __name__ == "__main__":
