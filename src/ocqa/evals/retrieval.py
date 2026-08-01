@@ -69,12 +69,14 @@ def run_eval(retriever, cases, chunks) -> dict:
     # Micro average per source_type of the expected chunks.
     by_source: dict[str, dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
     for row in per_case:
-        for chunk_id in row["expected"]:
-            source = chunk_by_id[chunk_id].source_type
+        for entry in row["expected"]:
+            alternates = [entry] if isinstance(entry, str) else entry
+            # Attribute an alternates group to the source of its first option;
+            # credit it if any option was retrieved.
+            source = chunk_by_id[alternates[0]].source_type
             for k in K_VALUES:
-                by_source[source][f"recall@{k}"].append(
-                    1.0 if chunk_id in row["retrieved"][:k] else 0.0
-                )
+                top_k = set(row["retrieved"][:k])
+                by_source[source][f"recall@{k}"].append(1.0 if set(alternates) & top_k else 0.0)
 
     return {
         "timestamp": datetime.now(UTC).isoformat(),

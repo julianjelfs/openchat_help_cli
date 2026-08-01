@@ -12,6 +12,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from ocqa.evals.metrics import flatten
 from ocqa.models import Chunk
 
 DEFAULT_GOLDEN_PATH = Path("evals/golden.jsonl")
@@ -30,7 +31,9 @@ class GoldenCase(BaseModel):
     id: str = Field(pattern=r"^g\d{3}$")
     category: Category
     question: str = Field(min_length=1)
-    expected_chunk_ids: list[str] = Field(default_factory=list)
+    # A str is a required chunk; a list of strs means "any one of these"
+    # (the corpus restates some rules in more than one source).
+    expected_chunk_ids: list[str | list[str]] = Field(default_factory=list)
     must_mention: list[str] = Field(default_factory=list)
     must_not_mention: list[str] = Field(default_factory=list)
     notes: str = ""
@@ -74,7 +77,7 @@ def validate_against_corpus(cases: list[GoldenCase], chunks: list[Chunk]) -> Non
     bad = [
         (case.id, chunk_id)
         for case in cases
-        for chunk_id in case.expected_chunk_ids
+        for chunk_id in flatten(case.expected_chunk_ids)
         if chunk_id not in known
     ]
     if bad:

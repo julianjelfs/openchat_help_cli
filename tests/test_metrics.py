@@ -43,3 +43,26 @@ def test_reciprocal_rank_miss_is_zero():
 
 def test_mean_empty_is_zero():
     assert mean([]) == 0.0
+
+
+def test_alternates_credit_any_single_match():
+    # "either of these chunks answers it" — finding one is a full hit.
+    assert recall_at_k([["a", "b"]], ["b", "x"], 5) == 1.0
+
+
+def test_alternates_do_not_double_count():
+    assert recall_at_k([["a", "b"]], ["a", "b"], 5) == 1.0
+
+
+def test_alternates_mixed_with_required():
+    # One required chunk plus one alternates group.
+    assert recall_at_k(["a", ["b", "c"]], ["a", "c"], 5) == 1.0
+    assert recall_at_k(["a", ["b", "c"]], ["a", "x"], 5) == 0.5
+
+
+def test_alternates_miss():
+    assert recall_at_k([["a", "b"]], ["x", "y"], 5) == 0.0
+
+
+def test_reciprocal_rank_accepts_any_alternate():
+    assert reciprocal_rank([["a", "b"]], ["x", "b"]) == 0.5
