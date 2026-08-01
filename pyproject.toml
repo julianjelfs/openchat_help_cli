@@ -1,0 +1,24 @@
+[project]
+name = "ocqa"
+version = "0.1.0"
+description = "Cited question answering over the OpenChat corpus"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.7",
+    "anthropic>=0.40",
+    "fastapi>=0.115",
+    "uvicorn>=0.32",
+    "numpy>=1.26",
+    "beautifulsoup4>=4.12",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "ruff>=0.6"]
+
+[project.scripts]
+eval-retrieval = "ocqa.evals.retrieval:main"
+eval-answers = "ocqa.evals.answers:main"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
