@@ -83,10 +83,17 @@ retrieval path is more interesting.
 - Blog citations are post-level, not section-level: the `<h2>` elements in the
   Svelte components carry no `id` attributes. Adding them upstream would
   upgrade every blog citation to a deep link. Re-ingesting is free.
-- The help-channel export is a partial cache — roughly 1,700 of ~8,800 event
-  indices, with large contiguous gaps. Those gaps are plausibly expired event
-  ranges rather than a caching failure. Unresolved, and it determines whether
-  the mined corpus can be meaningfully grown.
+- ~~The help-channel export is a partial cache~~ **Resolved (2026-08-01):**
+  after a full scroll-back of the channel the cache still holds ~1,678
+  records for an index space of ~8,820, with zero expired-range markers —
+  the server simply no longer returns the other indices (pruned membership
+  events, hard-deleted messages). The export is as complete as the backend
+  allows: 832 root messages is the entire recorded conversation. The mined
+  corpus cannot be grown from history; it grows forward only.
+- Thread replies are cached only for threads that have been opened in the
+  client (32 thread events in the current export). Answers given inside
+  threads are under-represented until an SDK-based exporter walks thread
+  events server-side (Phase 6 territory).
 - The mining shortlist requires the question to be the *first* message in a
   thread, which loses anything asked mid-conversation. This is the single
   biggest recall loss in the mining stage.

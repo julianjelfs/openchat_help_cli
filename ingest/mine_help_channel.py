@@ -48,7 +48,7 @@ from collections import defaultdict
 from collections.abc import Iterable
 from datetime import UTC, datetime, timedelta
 
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field
 
 # --- config -----------------------------------------------------------------
 
@@ -85,8 +85,6 @@ class ExtractedPair(BaseModel):
 
 
 SYSTEM_PROMPT = """You extract support knowledge from OpenChat help channel threads.
-
-Return a single JSON object matching the schema. No prose, no markdown fences.
 
 Reject the thread (is_qa: false) if ANY of the following hold:
 - No clear question, or no clear answer to it
@@ -206,31 +204,29 @@ def render(thread: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def extract(thread: list[dict], client) -> ExtractedPair | None:
+def extract(thread: list[dict], client, model: str) -> ExtractedPair | None:
     """One schema-validated call, with a single retry on a parse failure."""
     body = render(thread)
-    messages = [{"role": "user", "content": body}]
 
     for attempt in range(2):
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=1000,
-            system=SYSTEM_PROMPT,
-            messages=messages,
-        )
-        raw = response.content[0].text.strip()
-        raw = re.sub(r"^```(?:json)?|```$", "", raw).strip()
         try:
-            return ExtractedPair.model_validate_json(raw)
-        except ValidationError as err:
-            if attempt == 0:
-                messages += [
-                    {"role": "assistant", "content": raw},
-                    {"role": "user", "content": f"That failed validation:\n{err}\nReturn valid JSON only."},
-                ]
-            else:
+            completion = client.chat.completions.parse(
+                model=model,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": body},
+                ],
+                response_format=ExtractedPair,
+            )
+            message = completion.choices[0].message
+            if message.parsed is None:
+                raise ValueError(message.refusal or "no parsed output returned")
+            return message.parsed
+        except Exception:  # noqa: BLE001 — validation or API failure
+            if attempt == 1:
                 print(f"  ! validation failed twice on thread at event {thread[0]['index']}")
                 return None
+    return None
 
 
 def to_candidate(thread: list[dict], pair: ExtractedPair) -> dict:
@@ -276,6 +272,7 @@ def main() -> None:
     ap.add_argument("--events", required=True)
     ap.add_argument("--out", default="corpus/help_candidates.jsonl")
     ap.add_argument("--min-confidence", type=float, default=0.7)
+    ap.add_argument("--model", default="gpt-5-mini", help="extraction model")
     ap.add_argument("--limit", type=int, default=None, help="cap threads sent to the LLM")
     ap.add_argument("--no-llm", action="store_true", help="stop after shortlisting")
     args = ap.parse_args()
@@ -289,13 +286,13 @@ def main() -> None:
             print(render(threads[0])[:1500])
         return
 
-    from anthropic import Anthropic
+    from openai import OpenAI
 
-    client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    client = OpenAI(timeout=180.0)
     accepted, rejected = [], 0
 
     for i, thread in enumerate(threads, 1):
-        pair = extract(thread, client)
+        pair = extract(thread, client, args.model)
         if pair is None:
             continue
         keep = (
