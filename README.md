@@ -28,6 +28,20 @@ any future gain lives.
 | `corpus/terms.jsonl` | 73 |
 | `corpus/help.jsonl` | 14 (human-approved of 20 mined) |
 
+## Asking a question
+
+```bash
+export OPENAI_API_KEY=sk-...
+uv run ask "How do I buy CHAT tokens?"
+uv run ask "Why was my message deleted?" --show-retrieved
+uv run ask "Can I sell my account?" --json
+```
+
+One-shot, straight through the library — same retrieval and answering path
+the service uses, without the HTTP hop. `--show-retrieved` prints everything
+retrieval put in front of the model (starred if cited), which is the quickest
+way to see whether a bad answer was a retrieval miss or a generation miss.
+
 ## Running the service
 
 ```bash

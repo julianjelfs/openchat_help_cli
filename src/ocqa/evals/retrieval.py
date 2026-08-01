@@ -129,9 +129,7 @@ def print_summary(report: dict) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Deterministic retrieval eval")
-    parser.add_argument(
-        "--strategy", choices=["stub", "bm25", "dense", "hybrid"], default="dense"
-    )
+    parser.add_argument("--strategy", choices=["stub", "bm25", "dense", "hybrid"], default="dense")
     parser.add_argument("--embed-model", default=DEFAULT_EMBED_MODEL)
     parser.add_argument("--corpus-dir", type=Path, default=Path("corpus"))
     parser.add_argument("--golden", type=Path, default=Path("evals/golden.jsonl"))
