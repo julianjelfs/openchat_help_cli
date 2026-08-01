@@ -66,13 +66,11 @@ than the top of a long page. The terms ingester also reconstructs clause
 numbers ("3.1)", "4.1.2)") that exist only as CSS counters in the markup — a
 legal answer that cannot say which clause it is quoting is close to useless.
 
-**Open question for the next eval round:** the terms are 73 of 195 chunks
-(37% of the corpus) and are dense, formal and repetitive. They may crowd the
-top-5 for ordinary product questions — Schedule 2 of the terms restates the
-content standards already in `guidelines:3`, and Schedule 4 restates
-`guidelines:4`. Watch `by_source_type` recall and the `answerable` axes
-before and after; if the terms hurt more than they help, the finding gets
-written down and they come out.
+The terms restate parts of the guidelines (Schedule 2 ≈ `guidelines:3`,
+Schedule 4 ≈ `guidelines:4`), so some golden cases accept either source: an
+`expected_chunk_ids` entry may be a list meaning "any one of these". The
+worry that 73 legal chunks would crowd the top-5 was measured and did not
+materialise — see Results.
 
 Help channel, from a browser IndexedDB export:
 
@@ -115,16 +113,39 @@ Including the negative ones.
 
 ### Retrieval (recall over `expected_chunk_ids`, 40 scored cases)
 
-| strategy | r@1 | r@3 | r@5 | r@10 | MRR |
-|---|---|---|---|---|---|
-| stub-lexical (token overlap) | 0.487 | 0.675 | 0.775 | 0.838 | 0.672 |
-| dense (`text-embedding-3-large`, cosine) | 0.787 | 0.950 | **1.000** | 1.000 | 0.942 |
+| corpus | strategy | r@1 | r@3 | r@5 | r@10 | MRR |
+|---|---|---|---|---|---|---|
+| 100 chunks | stub-lexical (token overlap) | 0.487 | 0.675 | 0.775 | 0.838 | 0.672 |
+| 100 chunks | dense (`text-embedding-3-large`) | 0.787 | 0.950 | **1.000** | 1.000 | 0.942 |
+| 195 chunks | dense (+guidelines, terms, help) | 0.788 | — | **0.983** | 0.983 | 0.907 |
 
-The stub is a placeholder floor. Dense retrieval puts every expected chunk in
-the top 5, so a 5-chunk answer prompt never misses the material it needs.
-Dense r@1 is weaker on blog chunks (0.633 vs 0.850 for FAQ) because adjacent
-sections of the same post compete for the top slot — mostly harmless, since
-the siblings carry overlapping content and r@3 recovers to 0.933.
+Per source at 195 chunks (micro, over expected chunks):
+
+| source | n | r@1 | r@5 |
+|---|---|---|---|
+| faq | 21 | 0.905 | 1.000 |
+| blog | 29 | 0.552 | 1.000 |
+| guidelines | 6 | 1.000 | 1.000 |
+| help_channel | 8 | 1.000 | 1.000 |
+| terms | 4 | 0.250 | 0.750 |
+
+**Did the terms crowd out the corpus? No.** That was the open question when
+73 legal chunks (37% of the corpus) went in. Every other source still scores
+r@5 1.000; the mined help chunks and the guidelines are perfect at every k.
+The whole cost is one case, g083.
+
+**The one real failure, and what it argues for.** g083 asks "if I lose money
+on a token swap, is OpenChat liable?" and the answering clause
+(`terms:1:our_liability`) is never retrieved, even at k=10 — the clause is
+written in formal legal register and never uses the user's vocabulary.
+That is a vocabulary-mismatch failure, precisely what BM25 is good at and
+embeddings are not, which reopens the case for Phase 4 hybrid retrieval that
+the earlier 1.000 had closed. Small sample (4 terms cases) — worth more
+legal-phrasing cases before drawing hard conclusions.
+
+Blog r@1 stays weak (0.552) because adjacent sections of the same post
+compete for the top slot; harmless, since r@5 is 1.000 and the siblings
+carry overlapping content.
 
 ### Answers (graded by `gpt-5` on four independent axes, 60 cases)
 
