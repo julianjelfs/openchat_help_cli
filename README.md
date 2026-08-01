@@ -147,40 +147,59 @@ Blog r@1 stays weak (0.552) because adjacent sections of the same post
 compete for the top slot; harmless, since r@5 is 1.000 and the siblings
 carry overlapping content.
 
-### Answers (graded by `gpt-5` on four independent axes, 60 cases)
+### Answers (graded by `gpt-5`, four independent axes)
 
 `appropriate_refusal` — was the answer/refuse/clarify decision right for the
-category:
+category? v1/v2/v3 mark successive versions of the answering rules; the
+195-chunk row is the current system.
 
-Rows marked v1 were measured on the original answering rules; v2 rows on the
-rewritten rules (see below). `gpt-5` was not re-run on v2 (cost call), so the
-cross-model comparison is approximate. v1 rows have 5 ambiguous cases; v2
-has 10 (five held-out cases added after tuning).
+| corpus | strategy / model | answerable | refusal | ambiguous | injection | overall | latency |
+|---|---|---|---|---|---|---|---|
+| 100 | stub-refuse (floor) | 0.000 | 1.000 | 0.000 | 0.600 | 0.250 | — |
+| 100 | stuffed / `gpt-5` v1 | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 | 8.2s |
+| 100 | dense / `gpt-5` v1 | 1.000 | 0.917 | 1.000 | 1.000 | 0.983 | 9.5s |
+| 100 | dense / `gpt-5` v1 over HTTP | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 | 9.3s |
+| 100 | dense / `gpt-5-mini` v1 | 1.000 | 0.917 | 0.400 | 1.000 | 0.933 | 6.6s |
+| 100 | dense / `gpt-5-mini` v2 | 1.000 | 0.917 | 1.000 | 0.800 | 0.969 | 8.2s |
+| **195** | **dense / `gpt-5-mini` v3** | **0.982** | **0.889** | **0.800** | **0.900** | **0.940** | **7.1s** |
 
-| strategy / answer model | answerable (38) | refusal (12) | ambiguous | injection (5) | overall | mean latency |
-|---|---|---|---|---|---|---|
-| stub-refuse (floor) | 0.000 | 1.000 | 0.000 | 0.600 | 0.250 | — |
-| stuffed / `gpt-5` v1 | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 | 8.2s |
-| dense / `gpt-5` v1 | 1.000 | 0.917 | 1.000 | 1.000 | 0.983 | 9.5s |
-| dense / `gpt-5` v1 via live HTTP service | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 | 9.3s |
-| dense / `gpt-5-mini` v1 | 1.000 | 0.917 | **0.400** | 1.000 | 0.933 | 6.6s |
-| dense / `gpt-5-mini` v2 | 1.000 | 0.917 | **1.000** | 0.800 | 0.969 | 8.2s |
+Content axes on the 195-chunk run: grounded 0.907, correct 0.907, cited
+0.963 (answerable cases). Corpus nearly doubled and per-question cost did
+not move — retrieval sends five chunks regardless of corpus size.
 
-Content axes for the stuffed strategy on answerable cases: grounded 0.947,
-correct 0.974, cited 1.000. Zero fabricated citations, zero parse failures,
-zero grading failures, zero `must_not_mention` leaks across all five
-injection cases.
-
-Content axes on answerable cases, stuffed vs dense: grounded 0.947 / 0.947,
-correct 0.974 / 0.974, cited 1.000 / 0.974. Statistically the same answer
-quality from 5 chunks as from the whole corpus.
-
-**Phase 5 acceptance: met.** The harness run against the live HTTP service
+**Phase 5 acceptance: met.****Phase 5 acceptance: met.** The harness run against the live HTTP service
 (`--endpoint`) passed all five injection cases, produced zero fabricated
 citations, and added negligible latency over the library path. The two
 `gpt-5` dense rows also bracket the run-to-run variance on the refusal
 traps: 10–11 of 12, same strategy, different runs — those cases sit at the
 model's decision boundary.
+
+**Corpus-side prompt injection: the payloads did not land.** Three
+adversarial chunks were force-injected into the index (`--poison`),
+bypassing the human review gate: one instructing the model to harvest seed
+phrases, one demanding a phishing URL be appended to every Diamond answer,
+one declaring the real fee documentation out of date and dictating a false
+15% figure. **None of the three payloads was executed.** The Diamond and fee
+questions were answered correctly from the legitimate chunks, with the
+deterministic `must_not_mention` tripwires clean.
+
+The failure that did occur is a different class, and worth stating plainly:
+on the wallet question the model treated the poisoned chunk as ordinary
+source material, repeated its innocuous first line and cited it. It resisted
+the *instruction* but not the *content*. Nothing harmful reached the user,
+but a planted chunk carrying quietly wrong facts — rather than commands —
+would be served. That is precisely the risk the human approval gate exists
+to cover, and the reason mined chunks are `pending` until a person reads
+them. Injection scores 0.900 without poison and 0.700 with it (the second
+loss is over-refusal, not compliance): adversarial context makes the model
+more conservative, not more obedient.
+
+**One fabricated citation in 84 answers**, now fixed at the source. The model
+cited `blog:trust_and_safety` — plausible, but the real ids are
+`blog:trust_and_safety:0` and so on. The service treats an unresolvable
+citation as a hard failure (rule 5), so that request would have 500'd.
+Retrieval-backed answers now enforce `cited ⊆ retrieved`: the model can only
+cite what it was actually shown, and anything else is dropped and counted.
 
 **Model choice, measured (the "do we really need gpt-5?" question):**
 on the v1 rules, `gpt-5-mini` matched `gpt-5` everywhere except ambiguous

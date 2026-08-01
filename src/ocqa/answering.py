@@ -157,11 +157,14 @@ class _LLMAnswerer:
                 if message.parsed is None:
                     raise ValueError(message.refusal or "no parsed output returned")
                 draft = message.parsed
+                citations = draft.citations if draft.response_type == "answer" else []
+                if retrieved:
+                    citations = self._filter_citations(citations, retrieved)
                 return Answer(
                     text=draft.answer,
                     # Citations only on real answers; refusals and clarifying
                     # questions carry none (SPEC.md Phase 5 contract).
-                    citations=draft.citations if draft.response_type == "answer" else [],
+                    citations=citations,
                     refused=draft.response_type == "refuse",
                     confidence=min(max(draft.confidence, 0.0), 1.0),
                     strategy=self.name,
@@ -229,6 +232,21 @@ class RetrievalAnswerer(_LLMAnswerer):
         self.name = retriever.name
         self.max_chunks = max_chunks
         self.embed_model = getattr(retriever, "embed_model", None)
+        self.dropped_citations = 0
+
+    def _filter_citations(self, citations: list[str], retrieved: list[str]) -> list[str]:
+        """A retrieval-backed answer can only cite what it was actually shown.
+
+        Models occasionally emit a plausible-looking id that does not exist
+        (`blog:trust_and_safety` for `blog:trust_and_safety:4`). The service
+        treats an unresolvable citation as a hard failure, so enforcing the
+        invariant here — cited must be a subset of retrieved — turns a failed
+        request into a correct one.
+        """
+        allowed = set(retrieved)
+        kept = [chunk_id for chunk_id in citations if chunk_id in allowed]
+        self.dropped_citations += len(citations) - len(kept)
+        return kept
 
     def _build_messages(self, question: str) -> tuple[list[dict], list[str]]:
         hits = self._retriever.retrieve(question, k=self.max_chunks)

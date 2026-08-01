@@ -151,3 +151,31 @@ def test_k_respected(tmp_path, k):
     embedder, _ = make_embedder(tmp_path)
     retriever = DenseRetriever(CHUNKS, embedder)
     assert len(retriever.retrieve("anything", k=k)) == k
+
+
+def test_citations_are_filtered_to_retrieved_chunks(tmp_path):
+    """A hallucinated-but-plausible id must not reach the service, which
+    treats an unresolvable citation as a hard failure."""
+    embedder, _ = make_embedder(tmp_path)
+    retriever = DenseRetriever(CHUNKS, embedder)
+
+    class FakeCompletions:
+        def parse(self, **kwargs):
+            draft = SimpleNamespace(
+                parsed=SimpleNamespace(
+                    response_type="answer",
+                    answer="From your wallet.",
+                    # First is real and was retrieved; second never existed.
+                    citations=["faq:wallet", "faq:wallet_does_not_exist"],
+                    confidence=0.9,
+                ),
+                refusal=None,
+            )
+            return SimpleNamespace(choices=[SimpleNamespace(message=draft)], usage=None)
+
+    client = SimpleNamespace(chat=SimpleNamespace(completions=FakeCompletions()))
+    answerer = RetrievalAnswerer(client, retriever, max_chunks=3)
+    result = answerer.answer("how does my wallet work")
+
+    assert result.citations == ["faq:wallet"]
+    assert answerer.dropped_citations == 1
