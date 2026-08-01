@@ -1,0 +1,198 @@
+{
+  "timestamp": "2026-08-01T15:09:55.833353+00:00",
+  "answerer": "stuffed",
+  "answer_model": "gpt-5",
+  "grader_model": "gpt-5",
+  "answer_latency_ms": {
+    "mean": 13650,
+    "max": 21260
+  },
+  "answerer_parse_failures": 0,
+  "answer_tokens": {
+    "input": 103133,
+    "output": 5857
+  },
+  "overall": {
+    "cases": 5,
+    "grading_failures": 0,
+    "citation_failures": 0,
+    "must_mention_failures": 0,
+    "must_not_mention_failures": 0,
+    "axes": {
+      "grounded": {
+        "mean": 1.0,
+        "graded": 5
+      },
+      "correct": {
+        "mean": 1.0,
+        "graded": 5
+      },
+      "cited": {
+        "mean": 1.0,
+        "graded": 5
+      },
+      "appropriate_refusal": {
+        "mean": 1.0,
+        "graded": 5
+      }
+    }
+  },
+  "by_category": {
+    "answerable": {
+      "cases": 5,
+      "grading_failures": 0,
+      "citation_failures": 0,
+      "must_mention_failures": 0,
+      "must_not_mention_failures": 0,
+      "axes": {
+        "grounded": {
+          "mean": 1.0,
+          "graded": 5
+        },
+        "correct": {
+          "mean": 1.0,
+          "graded": 5
+        },
+        "cited": {
+          "mean": 1.0,
+          "graded": 5
+        },
+        "appropriate_refusal": {
+          "mean": 1.0,
+          "graded": 5
+        }
+      }
+    }
+  },
+  "per_case": [
+    {
+      "case_id": "g001",
+      "category": "answerable",
+      "refused": false,
+      "confidence": 0.83,
+      "citations": [
+        "faq:wallet",
+        "faq:send_tokens"
+      ],
+      "answer_text": "Open your OpenChat wallet from the main menu, select CHAT, click Send, and paste the CHAT deposit address from your chosen exchange. You can send to any external address this way. Note: transfers incur a small ledger fee (for CHAT: 0.001).",
+      "answer_ms": 21260,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": true,
+        "correct": true,
+        "cited": true,
+        "appropriate_refusal": true,
+        "rationale": "The steps to open the wallet, use Send, and send to any external address are supported by the wallet FAQ, and the note about a mandatory ledger fee with the CHAT fee of 0.001 is supported by the fee FAQ. The cited chunks are relevant to the claims, and answering was appropriate for an answerable question."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g002",
+      "category": "answerable",
+      "refused": false,
+      "confidence": 0.93,
+      "citations": [
+        "faq:buychat"
+      ],
+      "answer_text": "You can buy CHAT on several exchanges:\n- Helix Markets (CHATUSDC)\n- BitMart (CHAT_USDT)\n- Bitrue (CHAT_USDT)\n- Coinstore (CHAT_USDT)\n- LBank (CHAT_USDT)\n- ICDex (CHAT/ICP)\n- KongSwap (CHAT_ckUSDT)\n- ICPSwap (CHAT/ICP)\n- Sonic (CHAT/ICP)\n\nYou can also swap tokens for CHAT directly from your OpenChat wallet; it will automatically use the swap exchange with the best available price.",
+      "answer_ms": 10154,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": true,
+        "correct": true,
+        "cited": true,
+        "appropriate_refusal": true,
+        "rationale": "The answer closely matches the cited FAQ, listing the same exchanges/pairs and noting the wallet swap feature and best-price routing. It cites the relevant FAQ chunk and provides an appropriate direct answer to an answerable question."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g003",
+      "category": "answerable",
+      "refused": false,
+      "confidence": 0.9,
+      "citations": [
+        "faq:buyicp"
+      ],
+      "answer_text": "Yes. You can buy ICP with a credit card via the Network Nervous System (NNS) dapp\u2014log in with your Internet Identity and follow the prompts: https://support.dfinity.org/hc/en-us/articles/21363667463828-How-do-I-purchase-ICP-from-within-the-NNS-dapp",
+      "answer_ms": 6308,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": true,
+        "correct": true,
+        "cited": true,
+        "appropriate_refusal": true,
+        "rationale": "The answer matches the cited FAQ stating you can buy ICP via the NNS dapp with a credit card and that you must log in with Internet Identity and follow prompts. The citation is relevant and supports the claims, and answering was appropriate for an answerable question."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g004",
+      "category": "answerable",
+      "refused": false,
+      "confidence": 0.92,
+      "citations": [
+        "faq:send_tokens"
+      ],
+      "answer_text": "When you send tokens in OpenChat as a chat message, the transfer is executed by the token\u2019s ledger, which applies a mandatory transaction fee. That fee is burned, slightly reducing the token\u2019s supply. Current fees are:\n- CHAT: 0.001\n- ICP: 0.0001\n- ckBTC: 0.0000001\n- SNS1: 0.00001",
+      "answer_ms": 9467,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": true,
+        "correct": true,
+        "cited": true,
+        "appropriate_refusal": true,
+        "rationale": "The answer directly matches the cited FAQ: fees are mandatory ledger fees, burned to reduce supply, with the listed amounts for each token. It cites the relevant chunk and does not refuse an answerable question."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g005",
+      "category": "answerable",
+      "refused": false,
+      "confidence": 0.74,
+      "citations": [
+        "faq:diamond",
+        "faq:storage",
+        "blog:access_gate_expiry:1",
+        "blog:chit:2"
+      ],
+      "answer_text": "Here\u2019s what Diamond membership gives you:\n\n- Extra or enhanced features within OpenChat. For the full, up\u2011to\u2011date comparison and to upgrade, see /diamond.\n- Increased storage: 1 GB of file storage (vs 0.1 GB for free). All users\u2019 oldest files are reclaimed when they hit their limit; additionally, files from free\u2011tier users are reclaimed after 90 days regardless of usage.\n- Access to Diamond\u2011gated spaces: some communities/channels use a \u201cDiamond membership\u201d access gate, and your membership can be re\u2011evaluated on a schedule if the owner enables expiring gates.\n- Eligibility for certain gated events/channels: for example, the CHIT for CHAT airdrop community uses layered gates where standard Diamond (or lifetime Diamond) is one of the accepted ways to gain access.\n\nIf you need a precise feature list, please check /diamond as it\u2019s the canonical source.",
+      "answer_ms": 21062,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": true,
+        "correct": true,
+        "cited": true,
+        "appropriate_refusal": true,
+        "rationale": "The answer accurately summarizes Diamond\u2019s extra features page, storage limits and reclamation policy, and Diamond-gated access with re-evaluation, and gives a correct CHIT for CHAT example. All points are supported by the cited FAQ and blog posts."
+      },
+      "grading_failed": false
+    }
+  ]
+}
