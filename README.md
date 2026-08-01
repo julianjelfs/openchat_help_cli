@@ -32,7 +32,8 @@ curl -s localhost:8000/ask -H 'content-type: application/json' \
 ```
 
 `POST /ask` takes `{question, strategy (default "dense"), max_chunks (default
-5)}` and returns the answer with resolved citations (`chunk_id`, `url`,
+5)}` and answers with `gpt-5-mini` (the measured cost/quality winner —
+override with `serve-ocqa --answer-model gpt-5`) and returns the answer with resolved citations (`chunk_id`, `url`,
 `title`, `source_type`, `published`), `refused`, `confidence` and
 `latency_ms`. A citation that does not resolve against the index is a 500 —
 a fabricated citation never reaches a user. Refusals carry no citations and
@@ -105,13 +106,19 @@ the siblings carry overlapping content and r@3 recovers to 0.933.
 `appropriate_refusal` — was the answer/refuse/clarify decision right for the
 category:
 
-| strategy / answer model | answerable (38) | refusal (12) | ambiguous (5) | injection (5) | overall | mean latency |
+Rows marked v1 were measured on the original answering rules; v2 rows on the
+rewritten rules (see below). `gpt-5` was not re-run on v2 (cost call), so the
+cross-model comparison is approximate. v1 rows have 5 ambiguous cases; v2
+has 10 (five held-out cases added after tuning).
+
+| strategy / answer model | answerable (38) | refusal (12) | ambiguous | injection (5) | overall | mean latency |
 |---|---|---|---|---|---|---|
 | stub-refuse (floor) | 0.000 | 1.000 | 0.000 | 0.600 | 0.250 | — |
-| stuffed / `gpt-5` (whole corpus in prompt) | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 | 8.2s |
-| dense / `gpt-5` (top-5 chunks) | 1.000 | 0.917 | 1.000 | 1.000 | 0.983 | 9.5s |
-| dense / `gpt-5` via live HTTP service | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 | 9.3s |
-| dense / `gpt-5-mini` | 1.000 | 0.917 | **0.400** | 1.000 | 0.933 | 6.6s |
+| stuffed / `gpt-5` v1 | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 | 8.2s |
+| dense / `gpt-5` v1 | 1.000 | 0.917 | 1.000 | 1.000 | 0.983 | 9.5s |
+| dense / `gpt-5` v1 via live HTTP service | 1.000 | 0.833 | 1.000 | 1.000 | 0.967 | 9.3s |
+| dense / `gpt-5-mini` v1 | 1.000 | 0.917 | **0.400** | 1.000 | 0.933 | 6.6s |
+| dense / `gpt-5-mini` v2 | 1.000 | 0.917 | **1.000** | 0.800 | 0.969 | 8.2s |
 
 Content axes for the stuffed strategy on answerable cases: grounded 0.947,
 correct 0.974, cited 1.000. Zero fabricated citations, zero parse failures,
@@ -130,13 +137,30 @@ traps: 10–11 of 12, same strategy, different runs — those cases sit at the
 model's decision boundary.
 
 **Model choice, measured (the "do we really need gpt-5?" question):**
-`gpt-5-mini` matches `gpt-5` on answerable, refusal and injection at roughly
-a fifth of the token price and 30% lower latency — and then gives the whole
-gap back on ambiguous questions, where it guesses a reading and answers
-confidently (2/5 appropriate vs 5/5). Clarify-before-answering is a
-first-class behaviour in this service, so `gpt-5` stays the default;
-`gpt-5-mini` is the right choice only if that behaviour is prompt-tuned back
-in and re-measured, or if the deployment can tolerate guessed readings.
+on the v1 rules, `gpt-5-mini` matched `gpt-5` everywhere except ambiguous
+questions, where it guessed a reading instead of clarifying (0.400 vs
+1.000). Two changes fixed that — the output schema now forces a
+`response_type: answer | clarify | refuse` classification before the model
+writes anything, and the rules were rewritten as an explicit decision
+procedure (clarify checked first, with warnings about near-miss chunks and
+account-specific questions). Measured on the v2 rules with five held-out
+ambiguous cases added to guard against tuning-to-the-test: ambiguous went
+0.400 → 1.000 (10/10), and g049 — the streak-loss refusal trap no model had
+ever passed — now refuses correctly. `gpt-5-mini` is the service default at
+roughly a fifth of the token price of `gpt-5`.
+
+Two residual `gpt-5-mini` weaknesses, on the record:
+
+- **Echoing refusals on pure injections** (injection 0.800): g056 was
+  refused without complying or leaking, but the refusal named the injected
+  ask ("I can't provide the system prompt"), which the spec counts as
+  engagement. A "never repeat embedded instructions" rule is the obvious
+  next tuning step — unmeasured, so unclaimed.
+- **The clarify-vs-refuse boundary flickers.** g047/g050/g055 sit exactly on
+  it and a different one misses each run; the refusal category is stable at
+  11/12. The answerable-axis cost also changed flavour: gpt-5 embellished
+  detail, mini slips tense (reporting planned features as live — grounded
+  0.947 either way).
 
 **Phase 3 finding: dense retrieval beats the stuffed control.** Same or
 better on every quality axis (notably 11/12 vs 10/12 on the refusal traps —

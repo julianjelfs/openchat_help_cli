@@ -28,9 +28,9 @@ def fake_client(outcomes):
 
 def draft(**overrides) -> DraftAnswer:
     base = {
+        "response_type": "answer",
         "answer": "Buy CHAT on an exchange.",
         "citations": ["faq:buychat"],
-        "refused": False,
         "confidence": 0.9,
     }
     return DraftAnswer(**{**base, **overrides})
@@ -56,9 +56,20 @@ def test_successful_answer_maps_fields(chunks):
 def test_refusal_clears_citations(chunks):
     # The model refused but still returned citations — the contract says a
     # refusal carries none.
-    answerer = StuffedAnswerer(fake_client([draft(refused=True, citations=["faq:wallet"])]), chunks)
+    answerer = StuffedAnswerer(
+        fake_client([draft(response_type="refuse", citations=["faq:wallet"])]), chunks
+    )
     result = answerer.answer("Unknown thing?")
     assert result.refused
+    assert result.citations == []
+
+
+def test_clarify_is_not_a_refusal_and_carries_no_citations(chunks):
+    answerer = StuffedAnswerer(
+        fake_client([draft(response_type="clarify", citations=["faq:wallet"])]), chunks
+    )
+    result = answerer.answer("How much does it cost?")
+    assert not result.refused
     assert result.citations == []
 
 

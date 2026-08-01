@@ -109,9 +109,9 @@ def test_retrieval_answerer_prompt_contains_only_top_k(tmp_path):
             captured.update(kwargs)
             draft = SimpleNamespace(
                 parsed=SimpleNamespace(
+                    response_type="answer",
                     answer="From your wallet.",
                     citations=["faq:wallet"],
-                    refused=False,
                     confidence=0.9,
                 ),
                 refusal=None,

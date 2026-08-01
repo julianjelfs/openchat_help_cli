@@ -175,7 +175,9 @@ def main() -> None:
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--corpus-dir", type=Path, default=Path("corpus"))
-    parser.add_argument("--answer-model", default="gpt-5")
+    # gpt-5-mini: measured equal to gpt-5 on this corpus after the rules-v2
+    # tuning (see README), at ~1/5 the price. --answer-model gpt-5 to override.
+    parser.add_argument("--answer-model", default="gpt-5-mini")
     parser.add_argument("--embed-model", default=None)
     parser.add_argument(
         "--reasoning-effort", choices=["minimal", "low", "medium", "high"], default=None

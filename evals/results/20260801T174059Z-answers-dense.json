@@ -1,0 +1,756 @@
+{
+  "timestamp": "2026-08-01T17:40:59.040489+00:00",
+  "answerer": "dense",
+  "answer_model": "gpt-5-mini",
+  "embed_model": "text-embedding-3-large",
+  "max_chunks": 5,
+  "grader_model": "gpt-5",
+  "answer_latency_ms": {
+    "mean": 8077,
+    "max": 11420
+  },
+  "answerer_parse_failures": 0,
+  "answer_tokens": {
+    "input": 37051,
+    "output": 10968
+  },
+  "overall": {
+    "cases": 22,
+    "grading_failures": 0,
+    "citation_failures": 0,
+    "must_mention_failures": 0,
+    "must_not_mention_failures": 0,
+    "axes": {
+      "grounded": {
+        "mean": 0.0,
+        "graded": 1
+      },
+      "correct": {
+        "mean": 0.0,
+        "graded": 1
+      },
+      "cited": {
+        "mean": 0.0,
+        "graded": 1
+      },
+      "appropriate_refusal": {
+        "mean": 0.9091,
+        "graded": 22
+      }
+    }
+  },
+  "by_category": {
+    "ambiguous": {
+      "cases": 10,
+      "grading_failures": 0,
+      "citation_failures": 0,
+      "must_mention_failures": 0,
+      "must_not_mention_failures": 0,
+      "axes": {
+        "grounded": {
+          "mean": 0.0,
+          "graded": 0
+        },
+        "correct": {
+          "mean": 0.0,
+          "graded": 0
+        },
+        "cited": {
+          "mean": 0.0,
+          "graded": 0
+        },
+        "appropriate_refusal": {
+          "mean": 0.9,
+          "graded": 10
+        }
+      }
+    },
+    "refusal": {
+      "cases": 12,
+      "grading_failures": 0,
+      "citation_failures": 0,
+      "must_mention_failures": 0,
+      "must_not_mention_failures": 0,
+      "axes": {
+        "grounded": {
+          "mean": 0.0,
+          "graded": 1
+        },
+        "correct": {
+          "mean": 0.0,
+          "graded": 1
+        },
+        "cited": {
+          "mean": 0.0,
+          "graded": 1
+        },
+        "appropriate_refusal": {
+          "mean": 0.9167,
+          "graded": 12
+        }
+      }
+    }
+  },
+  "per_case": [
+    {
+      "case_id": "g039",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 0.72,
+      "citations": [],
+      "retrieved": [
+        "blog:trust_and_safety:6",
+        "faq:wallet",
+        "faq:translation",
+        "blog:signin:7",
+        "blog:signin:1"
+      ],
+      "answer_text": "I don\u2019t know \u2014 the provided references don\u2019t explain account deletion or why it might fail. Please ask the OpenChat help channel for support: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 8110,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "This was correctly handled as a refusal since the corpus doesn\u2019t cover account deletion, and the assistant pointed the user to the help channel. As a refusal, there are no factual claims to grade for grounding, correctness, or citations."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g040",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 0.27,
+      "citations": [],
+      "retrieved": [
+        "blog:communities_released:6",
+        "blog:communities_released:7",
+        "blog:communities_released:2",
+        "blog:communities_released:5",
+        "faq:voting"
+      ],
+      "answer_text": "I don't know \u2014 the provided reference material doesn't say how to delete a group or why it asks you to write a message. Please ask in the OpenChat help channel: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 7008,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The question falls outside the corpus, and the assistant refused and directed the user to the help channel. No factual claims were made, so grounding/correctness/citations are not applicable."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g041",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 0.9,
+      "citations": [],
+      "retrieved": [
+        "faq:info",
+        "blog:communities_released:1",
+        "faq:style_messages",
+        "blog:communities_released:1.1",
+        "faq:diamond"
+      ],
+      "answer_text": "I don\u2019t know \u2014 the provided reference documents don\u2019t say whether OpenChat has a theme/settings feature. Please ask the OpenChat help channel for assistance: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 6619,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "This was a refusal, which is appropriate for a \u201crefusal\u201d category case where the corpus doesn\u2019t cover the question. No citations are needed for a refusal."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g042",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 0.9,
+      "citations": [],
+      "retrieved": [
+        "blog:chit:3",
+        "faq:buychat",
+        "faq:airdrop",
+        "blog:chit:4",
+        "blog:chit:2"
+      ],
+      "answer_text": "I don\u2019t know \u2014 the provided reference chunks don\u2019t state the total supply of CHAT tokens. For official help, please contact the OpenChat help channel: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 8924,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "This is a refusal case and the assistant appropriately declined to answer and directed the user to the help channel. No factual claims from the corpus were made, so grounding, correctness, and citation are not applicable."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g043",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 1.0,
+      "citations": [],
+      "retrieved": [
+        "faq:style_messages",
+        "faq:shortcuts",
+        "faq:security",
+        "faq:storage",
+        "blog:communities_released:5.1"
+      ],
+      "answer_text": "I don\u2019t know \u2014 the provided reference chunks don\u2019t say whether you can schedule messages to send later. Please ask in the OpenChat help channel: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 8477,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The question is not covered by the corpus, and the assistant correctly refused and directed the user to the help channel. No factual claims were made, so grounding/correctness/citation do not apply."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g044",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 0.9,
+      "citations": [],
+      "retrieved": [
+        "faq:android_app",
+        "faq:ios_app",
+        "faq:info",
+        "blog:signin:0",
+        "blog:video:0"
+      ],
+      "answer_text": "I don\u2019t know \u2014 the provided reference chunks don\u2019t say whether a native desktop app for Windows or Mac exists. Please ask the OpenChat help channel: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 10167,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "Correctly refused since the corpus doesn\u2019t cover desktop apps and pointed to the help channel. No factual claims were made, so grounding, correctness, and citation are not applicable."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g045",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 0.35,
+      "citations": [],
+      "retrieved": [
+        "faq:info",
+        "blog:signin:0",
+        "blog:governance:5.1",
+        "faq:android_app",
+        "faq:wallet"
+      ],
+      "answer_text": "I don't know how to create a bot for OpenChat from the provided documents. Please ask in the OpenChat help channel: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 9550,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The question is out of scope for the corpus, and the assistant appropriately refused and directed the user to the help channel. No factual claims were made, so grounding, correctness, and citation are not applicable."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g046",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 0.88,
+      "citations": [],
+      "retrieved": [
+        "faq:style_messages",
+        "faq:shortcuts",
+        "faq:storage",
+        "faq:security",
+        "faq:translation"
+      ],
+      "answer_text": "I don\u2019t know \u2014 the provided reference chunks don\u2019t say whether you can edit a message after sending. Please ask in the OpenChat help channel: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 10361,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "This was a refusal in a category where the corpus doesn\u2019t cover the question, so refusing and directing to the help channel is appropriate. Since it\u2019s a refusal, there are no factual claims to grade for grounding, correctness, or citations."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g047",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 0.9,
+      "citations": [],
+      "retrieved": [
+        "blog:governance:8",
+        "faq:buyicp",
+        "faq:wallet",
+        "blog:chit:3",
+        "blog:chit:0"
+      ],
+      "answer_text": "I don\u2019t know \u2014 the provided reference material doesn\u2019t say where ICP staking rewards appear. Please ask the OpenChat help channel for assistance: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 11420,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "This was categorized as a refusal case and the corpus doesn\u2019t cover ICP staking rewards. The assistant appropriately refused and directed the user to the help channel; no citations were needed."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g048",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 0.9,
+      "citations": [],
+      "retrieved": [
+        "faq:buychat",
+        "faq:storage",
+        "faq:shortcuts",
+        "faq:wallet",
+        "faq:info"
+      ],
+      "answer_text": "I don\u2019t know \u2014 the provided reference documents don\u2019t describe how to export chat history. Please ask in the OpenChat help channel: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 6707,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": false,
+        "correct": false,
+        "cited": false,
+        "appropriate_refusal": true,
+        "rationale": "Appropriate refusal for an out-of-scope question, pointing to the help channel. However, it makes a claim about the corpus coverage without any supporting citations, so it is not grounded/cited and cannot be verified against cited material."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g049",
+      "category": "refusal",
+      "refused": true,
+      "confidence": 0.8,
+      "citations": [],
+      "retrieved": [
+        "blog:chit:1",
+        "blog:chit:0",
+        "blog:signin:7",
+        "faq:translation",
+        "blog:trust_and_safety:6"
+      ],
+      "answer_text": "I don't know \u2014 I can't access account-specific information. Please contact OpenChat support at https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021 for help investigating your streak.",
+      "answer_ms": 9076,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "This is an account-specific question not covered by the corpus, so refusing and directing the user to support is appropriate. No citations are needed for a refusal."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g050",
+      "category": "refusal",
+      "refused": false,
+      "confidence": 0.75,
+      "citations": [],
+      "retrieved": [
+        "faq:ios_app",
+        "faq:android_app",
+        "blog:signin:0",
+        "faq:info",
+        "blog:trust_and_safety:0"
+      ],
+      "answer_text": "Do you mean how to update the OpenChat web app in your browser, the Android app, or the iOS app?",
+      "answer_ms": 5154,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": false,
+        "rationale": "This was a refusal-category question where the correct action is to refuse and direct the user to the help channel. The assistant instead asked a clarifying question, so the refusal behavior was inappropriate; no factual claims were made, so other axes are null."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g051",
+      "category": "ambiguous",
+      "refused": false,
+      "confidence": 0.56,
+      "citations": [],
+      "retrieved": [
+        "blog:trust_and_safety:2",
+        "blog:trust_and_safety:1.1",
+        "blog:trust_and_safety:11",
+        "blog:trust_and_safety:1",
+        "blog:video:5"
+      ],
+      "answer_text": "Do you mean the alternative to continuing the old moderation system, or the alternative to centralised versus decentralised trust-and-safety approaches?",
+      "answer_ms": 7680,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The question is ambiguous and the assistant asked for clarification, which is appropriate. No factual claims were made, so grounding, correctness, and citation do not apply."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g052",
+      "category": "ambiguous",
+      "refused": false,
+      "confidence": 0.8,
+      "citations": [],
+      "retrieved": [
+        "blog:video:3",
+        "faq:storage",
+        "faq:send_tokens",
+        "faq:buychat",
+        "faq:buyicp"
+      ],
+      "answer_text": "Which cost do you mean \u2014 video calls, storage (file allowances), transaction fees for sending tokens, or buying CHAT/ICP?",
+      "answer_ms": 6673,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The question is ambiguous, and the answer appropriately asks for clarification by listing possible cost categories. It makes no factual claims, so grounding and citations are not applicable."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g053",
+      "category": "ambiguous",
+      "refused": false,
+      "confidence": 0.72,
+      "citations": [],
+      "retrieved": [
+        "faq:translation",
+        "faq:style_messages",
+        "blog:translations:0.1",
+        "blog:translations:3",
+        "faq:shortcuts"
+      ],
+      "answer_text": "What exactly isn't working \u2014 which feature or page, and what error or behaviour do you see?",
+      "answer_ms": 6045,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The user\u2019s request is underspecified; the assistant appropriately asked for clarification. No factual claims were made, so grounding, correctness, and citations are not applicable."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g054",
+      "category": "ambiguous",
+      "refused": false,
+      "confidence": 0.6,
+      "citations": [],
+      "retrieved": [
+        "blog:signin:2",
+        "faq:referral_rewards",
+        "blog:access_gate_expiry:1.2",
+        "blog:trust_and_safety:6",
+        "blog:signin:1"
+      ],
+      "answer_text": "Do you mean proving unique personhood with a verifiable credential, becoming a Diamond member, or a different kind of verification?",
+      "answer_ms": 8133,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The query is ambiguous across different types of \u201cverification,\u201d and the response correctly asks for clarification without making factual claims, so no citations are needed."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g055",
+      "category": "ambiguous",
+      "refused": true,
+      "confidence": 0.9,
+      "citations": [],
+      "retrieved": [
+        "faq:content",
+        "blog:trust_and_safety:3",
+        "blog:trust_and_safety:4",
+        "blog:trust_and_safety:5",
+        "faq:storage"
+      ],
+      "answer_text": "I don\u2019t know why your specific message was deleted. I can\u2019t access account or moderation logs. Please contact the OpenChat help channel for assistance: https://oc.app/community/dgegb-daaaa-aaaar-arlhq-cai/channel/3798400021",
+      "answer_ms": 8294,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": false,
+        "rationale": "This is an ambiguous question where the right move is to ask what kind of message/content was deleted. The assistant refused instead of seeking clarification. Since it\u2019s a refusal, we don\u2019t grade grounding/correctness/citation."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g061",
+      "category": "ambiguous",
+      "refused": false,
+      "confidence": 0.79,
+      "citations": [],
+      "retrieved": [
+        "faq:wallet",
+        "faq:buychat",
+        "faq:buyicp",
+        "faq:referral_rewards",
+        "blog:chit:5"
+      ],
+      "answer_text": "Do you mean sending tokens out of your OpenChat wallet to another crypto address, or converting them to fiat (cashing out to a bank/card)?",
+      "answer_ms": 11243,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The question is ambiguous, and the answer appropriately asks for clarification about whether the user wants to transfer crypto or cash out to fiat. No factual claims were made, so grounding, correctness, and citation are not applicable."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g062",
+      "category": "ambiguous",
+      "refused": false,
+      "confidence": 0.35,
+      "citations": [],
+      "retrieved": [
+        "faq:send_tokens",
+        "faq:style_messages",
+        "faq:storage",
+        "faq:wallet",
+        "faq:security"
+      ],
+      "answer_text": "Do you mean you can\u2019t send ordinary chat messages, you can\u2019t send images/files, or you can\u2019t send tokens as a message?",
+      "answer_ms": 7884,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The query is ambiguous, and the response asks for clarification on what type of message the user means. No factual claims were made, so grounding and citations are not applicable."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g063",
+      "category": "ambiguous",
+      "refused": false,
+      "confidence": 0.58,
+      "citations": [],
+      "retrieved": [
+        "faq:diamond",
+        "faq:voting",
+        "blog:signin:2",
+        "blog:chit:2",
+        "blog:access_gate_expiry:1.1"
+      ],
+      "answer_text": "Do you mean joining Diamond membership, the CHIT for CHAT airdrop community, the OpenChat proposals group, or a specific community/channel?",
+      "answer_ms": 7699,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The question is ambiguous, and the answer appropriately asks for clarification about what the user wants to join. No factual claims were made, so grounding, correctness, and citations are not applicable."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g064",
+      "category": "ambiguous",
+      "refused": false,
+      "confidence": 0.5,
+      "citations": [],
+      "retrieved": [
+        "faq:storage",
+        "faq:content",
+        "faq:style_messages",
+        "blog:access_gate_expiry:1.1",
+        "blog:chit:3"
+      ],
+      "answer_text": "Which limit do you mean \u2014 storage limits, content rules, message-styling limits, access-gate expiry, or CHIT/CHAT rewards?",
+      "answer_ms": 6513,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The question is ambiguous, and the assistant appropriately asked for clarification instead of answering. No factual claims were made, so grounding and citations are not applicable."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g065",
+      "category": "ambiguous",
+      "refused": false,
+      "confidence": 0.69,
+      "citations": [],
+      "retrieved": [
+        "blog:access_gate_expiry:1.2",
+        "blog:access_gate_expiry:1",
+        "blog:trust_and_safety:10",
+        "faq:ios_app",
+        "blog:chit:2.1"
+      ],
+      "answer_text": "Which wait do you mean \u2014 the iOS app, the trust & safety rollout, the proof-of-unique-personhood gate/CHIT airdrop, or something else?",
+      "answer_ms": 5973,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": null,
+        "correct": null,
+        "cited": null,
+        "appropriate_refusal": true,
+        "rationale": "The question is ambiguous and the response appropriately asks for clarification instead of guessing. No factual claims were made, so grounding, correctness, and citation are not applicable."
+      },
+      "grading_failed": false
+    }
+  ]
+}

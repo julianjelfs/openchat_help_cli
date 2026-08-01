@@ -339,11 +339,20 @@ def main() -> None:
     parser.add_argument("--golden", type=Path, default=Path("evals/golden.jsonl"))
     parser.add_argument("--out-dir", type=Path, default=Path("evals/results"))
     parser.add_argument("--limit", type=int, default=None, help="cap cases, for a cheap dry run")
+    parser.add_argument(
+        "--category",
+        action="append",
+        choices=["answerable", "refusal", "ambiguous", "injection"],
+        default=None,
+        help="only run these categories (repeatable) — cheap iteration on a failure slice",
+    )
     args = parser.parse_args()
 
     chunks = load_corpus(args.corpus_dir)
     cases = load_golden(args.golden)
     validate_against_corpus(cases, chunks)
+    if args.category:
+        cases = [case for case in cases if case.category in args.category]
     if args.limit:
         cases = cases[: args.limit]
 
