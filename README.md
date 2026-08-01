@@ -42,6 +42,32 @@ the service uses, without the HTTP hop. `--show-retrieved` prints everything
 retrieval put in front of the model (starred if cited), which is the quickest
 way to see whether a bad answer was a retrieval miss or a generation miss.
 
+## Adding an answer by hand
+
+The corpus loader reads every `*.jsonl` in `corpus/`, so hand-written
+entries are just another source file:
+
+```bash
+uv run add-answer \
+  -q "Can I change my username?" \
+  -a "Yes — open profile settings and edit the username field." \
+  -u https://oc.app/faq
+```
+
+Appends one validated line to `corpus/manual.jsonl`, retrievable on the next
+run. Editing that file directly works too; the command exists so id
+collisions, the content hash and schema validity cannot be got wrong
+silently. Unlike mined help-channel candidates, manual entries carry no
+`status` and are indexed immediately — writing one *is* the approval.
+
+The embedding cache is keyed on a hash computed from the chunk text, not on
+the stored `content_hash` field, so editing an entry and forgetting to update
+its hash re-embeds rather than silently reusing the old vector.
+
+If a new entry answers something the corpus previously couldn't, add a golden
+case for it — and check whether it turns an existing `refusal` case into an
+`answerable` one.
+
 ## Running the service
 
 ```bash

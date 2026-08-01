@@ -17,8 +17,19 @@ DEFAULT_EMBED_MODEL = "text-embedding-3-large"
 DEFAULT_CACHE_DIR = Path("cache")
 
 
+def content_key(text: str) -> str:
+    """Cache key for chunk text.
+
+    Computed from the text rather than read from the chunk's ``content_hash``
+    field: a hand-edited corpus line whose hash was not updated would
+    otherwise silently reuse the embedding of the text it used to hold. Same
+    formula the ingesters use, so a correctly-hashed chunk hits the cache.
+    """
+    return hashlib.sha256(text.encode()).hexdigest()[:16]
+
+
 def text_key(text: str) -> str:
-    """Cache key for ad-hoc text (queries). Chunks use their content_hash."""
+    """Cache key for ad-hoc text (queries)."""
     return "q:" + hashlib.sha256(text.encode()).hexdigest()[:16]
 
 

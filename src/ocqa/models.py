@@ -11,7 +11,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-SourceType = Literal["faq", "blog", "guidelines", "terms", "help_channel"]
+SourceType = Literal["faq", "blog", "guidelines", "terms", "help_channel", "manual"]
 
 
 class Chunk(BaseModel):

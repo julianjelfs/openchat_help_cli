@@ -21,7 +21,7 @@ from typing import Protocol
 
 import numpy as np
 
-from ocqa.embeddings import OpenAIEmbedder, text_key
+from ocqa.embeddings import OpenAIEmbedder, content_key, text_key
 from ocqa.models import Chunk
 
 _TOKEN = re.compile(r"[a-z0-9]+")
@@ -80,7 +80,7 @@ class DenseRetriever:
         self._chunks = chunks
         self._embedder = embedder
         self.embed_model = embedder.model
-        matrix = embedder.embed([(chunk.content_hash, chunk.text) for chunk in chunks])
+        matrix = embedder.embed([(content_key(chunk.text), chunk.text) for chunk in chunks])
         self._matrix = matrix / np.linalg.norm(matrix, axis=1, keepdims=True)
 
     def retrieve(self, question: str, k: int = 10) -> list[tuple[Chunk, float]]:
