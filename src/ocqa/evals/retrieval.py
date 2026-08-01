@@ -24,9 +24,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from ocqa.corpus import load_corpus
+from ocqa.embeddings import DEFAULT_EMBED_MODEL, OpenAIEmbedder
 from ocqa.evals.golden import load_golden, validate_against_corpus
 from ocqa.evals.metrics import mean, recall_at_k, reciprocal_rank
-from ocqa.retrieval import StubLexicalRetriever
+from ocqa.retrieval import DenseRetriever, StubLexicalRetriever
 
 K_VALUES = (1, 3, 5, 10)
 
@@ -78,6 +79,7 @@ def run_eval(retriever, cases, chunks) -> dict:
     return {
         "timestamp": datetime.now(UTC).isoformat(),
         "retriever": retriever.name,
+        "embed_model": getattr(retriever, "embed_model", None),
         "corpus_chunks": len(chunks),
         "golden_cases_total": len(cases),
         "golden_cases_scored": len(scored_cases),
@@ -125,6 +127,8 @@ def print_summary(report: dict) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Deterministic retrieval eval")
+    parser.add_argument("--strategy", choices=["stub", "dense"], default="dense")
+    parser.add_argument("--embed-model", default=DEFAULT_EMBED_MODEL)
     parser.add_argument("--corpus-dir", type=Path, default=Path("corpus"))
     parser.add_argument("--golden", type=Path, default=Path("evals/golden.jsonl"))
     parser.add_argument("--out-dir", type=Path, default=Path("evals/results"))
@@ -134,7 +138,14 @@ def main() -> None:
     cases = load_golden(args.golden)
     validate_against_corpus(cases, chunks)
 
-    retriever = StubLexicalRetriever(chunks)
+    if args.strategy == "dense":
+        # Embedding calls happen only on cache misses; with a warm cache this
+        # command still runs offline in seconds.
+        from openai import OpenAI
+
+        retriever = DenseRetriever(chunks, OpenAIEmbedder(OpenAI(), model=args.embed_model))
+    else:
+        retriever = StubLexicalRetriever(chunks)
     report = run_eval(retriever, cases, chunks)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)

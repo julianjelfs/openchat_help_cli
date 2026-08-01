@@ -1,0 +1,201 @@
+{
+  "timestamp": "2026-08-01T15:42:08.498677+00:00",
+  "answerer": "dense",
+  "answer_model": "gpt-5",
+  "embed_model": "text-embedding-3-large",
+  "max_chunks": 5,
+  "grader_model": "gpt-5",
+  "answer_latency_ms": {
+    "mean": 10799,
+    "max": 23221
+  },
+  "answerer_parse_failures": 0,
+  "answer_tokens": {
+    "input": 7903,
+    "output": 5211
+  },
+  "overall": {
+    "cases": 5,
+    "grading_failures": 0,
+    "citation_failures": 0,
+    "must_mention_failures": 1,
+    "must_not_mention_failures": 0,
+    "axes": {
+      "grounded": {
+        "mean": 1.0,
+        "graded": 5
+      },
+      "correct": {
+        "mean": 1.0,
+        "graded": 5
+      },
+      "cited": {
+        "mean": 1.0,
+        "graded": 5
+      },
+      "appropriate_refusal": {
+        "mean": 1.0,
+        "graded": 5
+      }
+    }
+  },
+  "by_category": {
+    "answerable": {
+      "cases": 5,
+      "grading_failures": 0,
+      "citation_failures": 0,
+      "must_mention_failures": 1,
+      "must_not_mention_failures": 0,
+      "axes": {
+        "grounded": {
+          "mean": 1.0,
+          "graded": 5
+        },
+        "correct": {
+          "mean": 1.0,
+          "graded": 5
+        },
+        "cited": {
+          "mean": 1.0,
+          "graded": 5
+        },
+        "appropriate_refusal": {
+          "mean": 1.0,
+          "graded": 5
+        }
+      }
+    }
+  },
+  "per_case": [
+    {
+      "case_id": "g001",
+      "category": "answerable",
+      "refused": false,
+      "confidence": 0.7,
+      "citations": [
+        "faq:wallet",
+        "faq:buychat"
+      ],
+      "answer_text": "Use your OpenChat wallet to transfer CHAT to the exchange\u2019s address:\n\n- Open your wallet from the main menu and click \u201csend\u201d. You can send your tokens to any other address of your choosing (e.g. the address provided by your chosen exchange).\n- Exchanges that support CHAT include: Helix Markets (CHATUSDC), BitMart (CHAT/USDT), Bitrue (CHAT/USDT), Coinstore (CHAT/USDT), LBank (CHAT/USDT), ICDex (CHAT/ICP), KongSwap (CHAT/USDT), ICPSwap (CHAT/ICP), and Sonic (CHAT/ICP).",
+      "answer_ms": 23221,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [
+          "fee"
+        ],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": true,
+        "correct": true,
+        "cited": true,
+        "appropriate_refusal": true,
+        "rationale": "The answer\u2019s steps for sending via the wallet are supported by the wallet FAQ, and the list of exchanges (with trading pairs) is taken from the buy-CHAT FAQ. Citations are relevant, and answering was appropriate for an answerable question."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g002",
+      "category": "answerable",
+      "refused": false,
+      "confidence": 0.9,
+      "citations": [
+        "faq:buychat"
+      ],
+      "answer_text": "You can buy CHAT on these exchanges:\n- Helix Markets (hybrid orderbook, USDC)\n- BitMart (CEX orderbook, USDT)\n- Bitrue (CEX orderbook, USDT)\n- Coinstore (CEX orderbook, USDT)\n- LBank (CEX orderbook, USDT)\n- ICDex (DEX orderbook, ICP)\n- KongSwap (DEX AMM swap, USDT)\n- ICPSwap (DEX AMM swap, ICP)\n- Sonic (DEX AMM swap, ICP)\n\nYou can also swap tokens for CHAT directly from your OpenChat wallet; it will automatically use the swap venue with the best available price.",
+      "answer_ms": 6106,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": true,
+        "correct": true,
+        "cited": true,
+        "appropriate_refusal": true,
+        "rationale": "The answer matches the FAQ exactly, listing the same exchanges, types, and quote assets, and noting the wallet swap with best-price routing. It cites the relevant FAQ chunk appropriately."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g003",
+      "category": "answerable",
+      "refused": false,
+      "confidence": 0.9,
+      "citations": [
+        "faq:buyicp"
+      ],
+      "answer_text": "Yes. The Network Nervous System (NNS) dapp lets you purchase ICP using a credit card. Log in with your Internet Identity and follow the prompts to complete the transaction: https://support.dfinity.org/hc/en-us/articles/21363667463828-How-do-I-purchase-ICP-from-within-the-NNS-dapp",
+      "answer_ms": 5982,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": true,
+        "correct": true,
+        "cited": true,
+        "appropriate_refusal": true,
+        "rationale": "The answer states that ICP can be bought with a credit card via the NNS dapp and mentions logging in with Internet Identity and following prompts, which is directly supported by the cited FAQ chunk. The citation is relevant, and answering was appropriate for an answerable question."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g004",
+      "category": "answerable",
+      "refused": false,
+      "confidence": 0.9,
+      "citations": [
+        "faq:send_tokens"
+      ],
+      "answer_text": "Because token transfers are processed by each token\u2019s ledger, which charges a mandatory transfer fee. That fee is burned, slightly reducing the token\u2019s supply. Current fees: CHAT 0.001, ICP 0.0001, ckBTC 0.0000001, SNS1 0.00001.",
+      "answer_ms": 5487,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": true,
+        "correct": true,
+        "cited": true,
+        "appropriate_refusal": true,
+        "rationale": "All claims (ledger-imposed mandatory fee, fee is burned reducing supply, and the specific fee amounts for each token) are directly supported by the cited FAQ chunk. The answer is accurate, uses relevant citation, and appropriately answers an answerable question."
+      },
+      "grading_failed": false
+    },
+    {
+      "case_id": "g005",
+      "category": "answerable",
+      "refused": false,
+      "confidence": 0.7,
+      "citations": [
+        "faq:diamond",
+        "faq:airdrop",
+        "blog:chit:2"
+      ],
+      "answer_text": "Diamond membership gives you:\n\n- Access to extra or enhanced features within OpenChat. You can view the full feature comparison and upgrade at /diamond.\n- Eligibility for certain token rewards: for example, an April airdrop awarded 1M CHAT to eligible Diamond users, and a proposed user rewards scheme would let Diamond users earn CHAT based on their reputation.\n- Access to some gated communities and channels (e.g., entry to the CHIT for CHAT airdrop requires Diamond membership in combination with other criteria, and lifetime Diamond can also satisfy some gates).",
+      "answer_ms": 13200,
+      "checks": {
+        "citations_resolve": true,
+        "unresolved_citations": [],
+        "must_mention_missing": [],
+        "must_not_mention_hit": []
+      },
+      "grade": {
+        "grounded": true,
+        "correct": true,
+        "cited": true,
+        "appropriate_refusal": true,
+        "rationale": "All claims are supported by the cited FAQs/blog: extra/enhanced features with link to /diamond, prior 1M CHAT airdrop and proposed rewards for Diamond users, and CHIT for CHAT gating that involves Diamond (standard or lifetime). The question is answerable and was answered with relevant citations."
+      },
+      "grading_failed": false
+    }
+  ]
+}

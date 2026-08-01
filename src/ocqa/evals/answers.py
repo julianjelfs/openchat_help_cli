@@ -37,11 +37,13 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
-from ocqa.answering import StubRefusalAnswerer, StuffedAnswerer
+from ocqa.answering import RetrievalAnswerer, StubRefusalAnswerer, StuffedAnswerer
 from ocqa.corpus import load_corpus
+from ocqa.embeddings import DEFAULT_EMBED_MODEL, OpenAIEmbedder
 from ocqa.evals.golden import GoldenCase, load_golden, validate_against_corpus
 from ocqa.evals.metrics import mean
 from ocqa.models import Answer, Chunk
+from ocqa.retrieval import DenseRetriever
 
 GRADER_MODEL = "gpt-5"
 
@@ -226,6 +228,8 @@ def run_eval(answerer, grader, cases: list[GoldenCase], chunks: list[Chunk]) -> 
         "timestamp": datetime.now(UTC).isoformat(),
         "answerer": answerer.name,
         "answer_model": getattr(answerer, "model", None),
+        "embed_model": getattr(answerer, "embed_model", None),
+        "max_chunks": getattr(answerer, "max_chunks", None),
         "grader_model": grader.model,
         "answer_latency_ms": {
             "mean": int(mean([float(v) for v in latencies])),
@@ -277,9 +281,11 @@ def print_summary(report: dict) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="LLM-graded answer eval")
-    parser.add_argument("--strategy", choices=["stub", "stuffed"], default="stuffed")
+    parser.add_argument("--strategy", choices=["stub", "stuffed", "dense"], default="stuffed")
     parser.add_argument("--answer-model", default="gpt-5")
     parser.add_argument("--grader-model", default=GRADER_MODEL)
+    parser.add_argument("--embed-model", default=DEFAULT_EMBED_MODEL)
+    parser.add_argument("--max-chunks", type=int, default=5)
     parser.add_argument("--corpus-dir", type=Path, default=Path("corpus"))
     parser.add_argument("--golden", type=Path, default=Path("evals/golden.jsonl"))
     parser.add_argument("--out-dir", type=Path, default=Path("evals/results"))
@@ -299,7 +305,12 @@ def main() -> None:
     from openai import OpenAI
 
     client = OpenAI()
-    if args.strategy == "stuffed":
+    if args.strategy == "dense":
+        retriever = DenseRetriever(chunks, OpenAIEmbedder(client, model=args.embed_model))
+        answerer = RetrievalAnswerer(
+            client, retriever, model=args.answer_model, max_chunks=args.max_chunks
+        )
+    elif args.strategy == "stuffed":
         answerer = StuffedAnswerer(client, chunks, model=args.answer_model)
     else:
         answerer = StubRefusalAnswerer()
