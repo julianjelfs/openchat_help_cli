@@ -328,7 +328,7 @@ def print_summary(report: dict) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="LLM-graded answer eval")
     parser.add_argument(
-        "--strategy", choices=["stub", "stuffed", "dense", "bm25", "hybrid"], default="hybrid"
+        "--strategy", choices=["stub", "stuffed", "dense", "bm25", "hybrid"], default="dense"
     )
     parser.add_argument("--answer-model", default="gpt-5")
     parser.add_argument("--grader-model", default=GRADER_MODEL)

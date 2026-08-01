@@ -117,7 +117,38 @@ Including the negative ones.
 |---|---|---|---|---|---|---|
 | 100 chunks | stub-lexical (token overlap) | 0.487 | 0.675 | 0.775 | 0.838 | 0.672 |
 | 100 chunks | dense (`text-embedding-3-large`) | 0.787 | 0.950 | **1.000** | 1.000 | 0.942 |
-| 195 chunks | dense (+guidelines, terms, help) | 0.788 | — | **0.983** | 0.983 | 0.907 |
+| 195 chunks | **dense** (+guidelines, terms, help) | 0.788 | — | **0.983** | 0.983 | 0.907 |
+| 195 chunks | bm25 (Okapi, no stemming) | 0.568 | 0.797 | 0.831 | 0.915 | 0.730 |
+| 195 chunks | hybrid (dense + bm25, RRF) | 0.686 | 0.881 | 0.915 | 0.932 | 0.826 |
+
+**Phase 4.1 did not ship. Hybrid retrieval is worse than dense alone** —
+recall@5 0.915 against 0.983, MRR 0.826 against 0.907 — and it did not
+improve a single golden case. It lost five: two guidelines/terms cases fell
+out of the top 10 entirely (g077, g082, g084).
+
+The spec justified hybrid on the corpus being thick with product jargon,
+where embeddings are weak on exact terms. That reasoning is sound in general
+and wrong here: `text-embedding-3-large` already handles this jargon well
+(dense scores r@5 1.000 on FAQ and help-channel chunks), so BM25 contributes
+mostly noise, and reciprocal rank fusion weights it equally with a retriever
+that is far stronger. Fusing a 0.831 ranker with a 0.983 ranker at parity
+drags the result to 0.915 — arithmetic, not surprise, in hindsight.
+
+BM25 is kept as a selectable strategy rather than deleted: it is the
+evidence for this finding, it is cheap, and the balance could change if the
+corpus grows or shifts toward identifier-heavy content. It is not in the
+serving path.
+
+**The g083 hypothesis was also wrong, and BM25 disproved it.** Phase 4 was
+reopened because dense never retrieves the liability clause for "if I lose
+money on a token swap, is OpenChat liable?", which looked like a
+vocabulary-mismatch failure. BM25 fails the same case: the clause contains
+"liable" once and "liability" five times but never "swap", "lose" or
+"money", so the strongest query term drags the swap section to the top while
+the answer sits in the general liability clause of Section A. Knowing that
+general terms govern swap losses is a *conceptual* inference about document
+structure, not a lexical or semantic match — which is a reranker's job
+(Phase 4.2), not fusion's.
 
 Per source at 195 chunks (micro, over expected chunks):
 

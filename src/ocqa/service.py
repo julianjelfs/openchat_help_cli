@@ -15,10 +15,10 @@ Contract highlights, enforced here rather than hoped for:
   retrieved ids, cited ids, refusal and latency. These logs are the next eval
   set.
 
-Default strategy is ``dense``: the measured Phase 3 winner. The spec named
-``hybrid+rerank``, but Phase 4 was not built — dense already retrieves every
-golden expected chunk at k=5, leaving hybrid nothing to demonstrate at this
-corpus size (see README).
+Default strategy is ``dense``: the measured winner. The spec named
+``hybrid+rerank``; hybrid was built and measured in Phase 4.1 and came out
+worse than dense alone (recall@5 0.915 vs 0.983), so it is selectable but
+not the default. See the README for the numbers and why.
 """
 
 from __future__ import annotations
@@ -38,7 +38,7 @@ from ocqa.answering import Answerer, RetrievalAnswerer, StubRefusalAnswerer, Stu
 from ocqa.corpus import load_corpus
 from ocqa.models import Chunk, Citation
 
-DEFAULT_STRATEGY = "hybrid"
+DEFAULT_STRATEGY = "dense"
 
 logger = logging.getLogger("ocqa.service")
 
