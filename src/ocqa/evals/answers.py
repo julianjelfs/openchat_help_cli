@@ -148,6 +148,39 @@ class LLMGrader:
         return None
 
 
+class HTTPAnswerer:
+    """Answers by POSTing to a running ocqa service, so the harness measures
+    exactly what a user of the HTTP API would get (SPEC.md Phase 5
+    acceptance: the eval can target the endpoint as well as the library)."""
+
+    def __init__(self, base_url: str, strategy: str, max_chunks: int = 5):
+        import httpx
+
+        self._http = httpx.Client(base_url=base_url, timeout=180.0)
+        self.strategy = strategy
+        self.max_chunks = max_chunks
+        self.name = f"http-{strategy}"
+
+    def answer(self, question: str) -> Answer:
+        response = self._http.post(
+            "/ask",
+            json={
+                "question": question,
+                "strategy": self.strategy,
+                "max_chunks": self.max_chunks,
+            },
+        )
+        response.raise_for_status()
+        data = response.json()
+        return Answer(
+            text=data["answer"],
+            citations=[citation["chunk_id"] for citation in data["citations"]],
+            refused=data["refused"],
+            confidence=data["confidence"],
+            strategy=self.name,
+        )
+
+
 def _mentions(text: str, term: str) -> bool:
     """Case-, whitespace- and hyphen-insensitive substring check, so that
     'homescreen' matches 'Home Screen' and '30 day' matches '30-day'."""
@@ -192,6 +225,7 @@ def run_eval(answerer, grader, cases: list[GoldenCase], chunks: list[Chunk]) -> 
                 "refused": answer.refused,
                 "confidence": answer.confidence,
                 "citations": answer.citations,
+                "retrieved": answer.retrieved,
                 "answer_text": answer.text,
                 "answer_ms": answer_ms,
                 "checks": checks,
@@ -286,6 +320,14 @@ def main() -> None:
     parser.add_argument("--grader-model", default=GRADER_MODEL)
     parser.add_argument("--embed-model", default=DEFAULT_EMBED_MODEL)
     parser.add_argument("--max-chunks", type=int, default=5)
+    parser.add_argument(
+        "--reasoning-effort", choices=["minimal", "low", "medium", "high"], default=None
+    )
+    parser.add_argument(
+        "--endpoint",
+        default=None,
+        help="base URL of a running ocqa service; answers come over HTTP instead of the library",
+    )
     parser.add_argument("--corpus-dir", type=Path, default=Path("corpus"))
     parser.add_argument("--golden", type=Path, default=Path("evals/golden.jsonl"))
     parser.add_argument("--out-dir", type=Path, default=Path("evals/results"))
@@ -305,13 +347,21 @@ def main() -> None:
     from openai import OpenAI
 
     client = OpenAI()
-    if args.strategy == "dense":
+    if args.endpoint:
+        answerer = HTTPAnswerer(args.endpoint, args.strategy, max_chunks=args.max_chunks)
+    elif args.strategy == "dense":
         retriever = DenseRetriever(chunks, OpenAIEmbedder(client, model=args.embed_model))
         answerer = RetrievalAnswerer(
-            client, retriever, model=args.answer_model, max_chunks=args.max_chunks
+            client,
+            retriever,
+            model=args.answer_model,
+            max_chunks=args.max_chunks,
+            reasoning_effort=args.reasoning_effort,
         )
     elif args.strategy == "stuffed":
-        answerer = StuffedAnswerer(client, chunks, model=args.answer_model)
+        answerer = StuffedAnswerer(
+            client, chunks, model=args.answer_model, reasoning_effort=args.reasoning_effort
+        )
     else:
         answerer = StubRefusalAnswerer()
     grader = LLMGrader(client, model=args.grader_model)

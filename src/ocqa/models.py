@@ -42,3 +42,27 @@ class Answer(BaseModel):
     refused: bool
     confidence: float = Field(ge=0.0, le=1.0)
     strategy: str
+    # The chunk ids that were put in front of the model (retrieval-backed
+    # strategies only). Kept separate from citations so a wrong answer can be
+    # diagnosed instantly as "never retrieved" vs "retrieved and misused".
+    retrieved: list[str] = Field(default_factory=list)
+
+
+class Citation(BaseModel):
+    """A resolved citation, as returned by the service."""
+
+    chunk_id: str
+    url: str
+    title: str
+    source_type: SourceType
+    published: str | None = None
+
+    @classmethod
+    def from_chunk(cls, chunk: Chunk) -> Citation:
+        return cls(
+            chunk_id=chunk.id,
+            url=chunk.url,
+            title=chunk.title,
+            source_type=chunk.source_type,
+            published=chunk.meta.get("published") or chunk.meta.get("answered_at"),
+        )

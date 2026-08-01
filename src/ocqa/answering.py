@@ -99,24 +99,28 @@ class _LLMAnswerer:
 
     name = "llm"
 
-    def __init__(self, client, model: str = "gpt-5"):
+    def __init__(self, client, model: str = "gpt-5", reasoning_effort: str | None = None):
         self._client = client
         self.model = model
+        self.reasoning_effort = reasoning_effort
         self.parse_failures = 0
         self.input_tokens = 0
         self.output_tokens = 0
 
-    def _build_messages(self, question: str) -> list[dict]:
+    def _build_messages(self, question: str) -> tuple[list[dict], list[str]]:
+        """Return (messages, ids of the chunks put in front of the model)."""
         raise NotImplementedError
 
     def answer(self, question: str) -> Answer:
-        messages = self._build_messages(question)
+        messages, retrieved = self._build_messages(question)
+        extra = {"reasoning_effort": self.reasoning_effort} if self.reasoning_effort else {}
         for attempt in range(2):
             try:
                 completion = self._client.chat.completions.parse(
                     model=self.model,
                     messages=messages,
                     response_format=DraftAnswer,
+                    **extra,
                 )
                 if completion.usage:
                     self.input_tokens += completion.usage.prompt_tokens
@@ -132,6 +136,7 @@ class _LLMAnswerer:
                     refused=draft.refused,
                     confidence=min(max(draft.confidence, 0.0), 1.0),
                     strategy=self.name,
+                    retrieved=retrieved,
                 )
             except Exception:  # noqa: BLE001 — validation or API failure
                 if attempt == 1:
@@ -143,6 +148,7 @@ class _LLMAnswerer:
                         refused=True,
                         confidence=0.0,
                         strategy=self.name,
+                        retrieved=retrieved,
                     )
         raise AssertionError("unreachable")
 
@@ -156,15 +162,22 @@ class StuffedAnswerer(_LLMAnswerer):
 
     name = "stuffed"
 
-    def __init__(self, client, chunks: list[Chunk], model: str = "gpt-5"):
-        super().__init__(client, model)
+    def __init__(
+        self,
+        client,
+        chunks: list[Chunk],
+        model: str = "gpt-5",
+        reasoning_effort: str | None = None,
+    ):
+        super().__init__(client, model, reasoning_effort)
         self._system = build_stuffed_system(chunks)
 
-    def _build_messages(self, question: str) -> list[dict]:
-        return [
+    def _build_messages(self, question: str) -> tuple[list[dict], list[str]]:
+        messages = [
             {"role": "system", "content": self._system},
             {"role": "user", "content": f"<question>\n{question}\n</question>"},
         ]
+        return messages, []
 
 
 class RetrievalAnswerer(_LLMAnswerer):
@@ -174,17 +187,24 @@ class RetrievalAnswerer(_LLMAnswerer):
     chunks travel in the user message. Strategy name comes from the retriever.
     """
 
-    def __init__(self, client, retriever: Retriever, model: str = "gpt-5", max_chunks: int = 5):
-        super().__init__(client, model)
+    def __init__(
+        self,
+        client,
+        retriever: Retriever,
+        model: str = "gpt-5",
+        max_chunks: int = 5,
+        reasoning_effort: str | None = None,
+    ):
+        super().__init__(client, model, reasoning_effort)
         self._retriever = retriever
         self.name = retriever.name
         self.max_chunks = max_chunks
         self.embed_model = getattr(retriever, "embed_model", None)
 
-    def _build_messages(self, question: str) -> list[dict]:
+    def _build_messages(self, question: str) -> tuple[list[dict], list[str]]:
         hits = self._retriever.retrieve(question, k=self.max_chunks)
         rendered = render_chunks([chunk for chunk, _ in hits])
-        return [
+        messages = [
             {"role": "system", "content": ANSWER_RULES},
             {
                 "role": "user",
@@ -192,3 +212,4 @@ class RetrievalAnswerer(_LLMAnswerer):
                 f"<question>\n{question}\n</question>",
             },
         ]
+        return messages, [chunk.id for chunk, _ in hits]

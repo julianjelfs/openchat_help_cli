@@ -19,6 +19,7 @@ dev = ["pytest>=8.0", "ruff>=0.6"]
 [project.scripts]
 eval-retrieval = "ocqa.evals.retrieval:main"
 eval-answers = "ocqa.evals.answers:main"
+serve-ocqa = "ocqa.service:main"
 
 [build-system]
 requires = ["hatchling"]

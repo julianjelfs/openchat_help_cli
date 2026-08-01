@@ -7,15 +7,45 @@ the question, and every pipeline stage is justified by a measured number.
 ## State
 
 Ingestion, the evaluation harness (Phase 1), the whole-corpus baseline
-(Phase 2) and dense retrieval (Phase 3) are done. Next: Phase 4 (hybrid +
-reranking) — which now has to justify itself against dense's recall@5 of
-1.000 on this golden set.
+(Phase 2), dense retrieval (Phase 3) and the HTTP service (Phase 5) are done.
+
+**Phase 4 (hybrid BM25 + reranking) was deliberately skipped**: dense
+retrieval already places every golden expected chunk in the top 5
+(recall@5 = 1.000), so hybrid and reranking have nothing left to demonstrate
+at this corpus size. Revisit if the corpus grows or a harder golden set
+(adversarial paraphrases, k=3 budgets) opens headroom — r@1 (0.787) is where
+any future gain lives.
 
 | | chunks |
 |---|---|
 | `corpus/faq.jsonl` | 17 |
 | `corpus/blog.jsonl` | 83 |
 | help channel | mining pipeline built, not yet run |
+
+## Running the service
+
+```bash
+uv run serve-ocqa                # needs OPENAI_API_KEY; builds the index at startup
+curl -s localhost:8000/health
+curl -s localhost:8000/ask -H 'content-type: application/json' \
+  -d '{"question": "How do I buy CHAT?"}'
+```
+
+`POST /ask` takes `{question, strategy (default "dense"), max_chunks (default
+5)}` and returns the answer with resolved citations (`chunk_id`, `url`,
+`title`, `source_type`, `published`), `refused`, `confidence` and
+`latency_ms`. A citation that does not resolve against the index is a 500 —
+a fabricated citation never reaches a user. Refusals carry no citations and
+point at the help channel. Every request is logged as one JSON line
+(question, strategy, retrieved ids, cited ids, refusal, latency) — those
+logs are the next eval set. The spec named `hybrid+rerank` as the default
+strategy; the measured winner is `dense`, so that is the default.
+
+The eval harness can target a running service instead of the library:
+
+```bash
+uv run eval-answers --strategy dense --endpoint http://127.0.0.1:8000
+```
 
 ## Regenerating the corpus
 
