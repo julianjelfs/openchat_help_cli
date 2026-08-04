@@ -1,8 +1,8 @@
 # How this thing works
 
-A walkthrough of the system for someone who wants to understand — and talk
-about — what each part does and why. `README.md` has the numbers; this
-explains the shape.
+A walkthrough of the system for a curious reviewer: what each part does and
+why I built it that way. `README.md` has the numbers; this explains the
+shape.
 
 ---
 
@@ -96,8 +96,7 @@ Each chunk carries more than its text:
 | `content_hash` | Used to cache embeddings — re-ingesting doesn't mean re-paying. |
 | `status` | Help-channel chunks only. `pending` until a human approves them. |
 
-Two ingestion details worth knowing because they're the kind of thing that
-bites you:
+Two ingestion details worth knowing, because both shaped the design:
 
 - The terms of use render clause numbers ("3.1", "4.1.2") in **CSS**, not
   HTML. Parse the markup naively and you lose them. A legal answer that
@@ -105,7 +104,7 @@ bites you:
   rebuilds the numbering from list position.
 - The help-channel content is **user-generated**, i.e. untrusted. It gets
   mined into candidates by an LLM, then sits at `status: pending` until a
-  human approves each one. Six of twenty were rejected — including two
+  human approves each one. I rejected six of the twenty — including two
   "there's an ongoing issue with X" threads that would have rotted into
   confidently wrong permanent answers.
 
@@ -144,7 +143,7 @@ take the top 5. That's it — the whole retriever is about 15 lines.
 
 **Why 5?** Enough to cover a question that spans sources, few enough to keep
 the prompt small (~1,500 tokens). It's a tunable knob, and the eval is how
-you'd tune it.
+I'd tune it.
 
 Four retrieval strategies exist in the codebase, because comparing them was
 the point:
@@ -209,7 +208,7 @@ Several deliberate choices here:
 FastAPI, `POST /ask`. Question in; answer, resolved citations (id, url,
 title, source, date), refusal flag, confidence and latency out.
 
-Two things it does that are worth copying:
+Two deliberate choices here, neither of which I'd give up:
 
 - **Citation validation is a hard failure.** Every returned chunk id must
   exist in the index. If it doesn't, the request 500s rather than returning
@@ -245,7 +244,7 @@ that answers everything confidently is worse than useless — the whole value
 proposition is that you can trust it, and that requires it to say "I don't
 know" reliably.
 
-Ground truth was filled in **by hand against the actual corpus**. Tedious,
+I filled the ground truth in **by hand against the actual corpus**. Tedious,
 and repeatedly the highest-value hour in the project.
 
 ### Two separate evals
@@ -254,8 +253,8 @@ and repeatedly the highest-value hour in the project.
 seconds, free. Metrics:
 
 - **recall@k**: of the chunks that should have been found, what fraction
-  appeared in the top k? recall@5 = 0.983 means we almost always put the
-  right source text in front of the model.
+  appeared in the top k? recall@5 = 0.983 means the right source text is
+  almost always in front of the model.
 - **MRR** (mean reciprocal rank): if the first correct chunk is at position
   1 you score 1.0, at position 2 you score 0.5, at position 4 you score 0.25.
   Rewards ranking the right thing *first*, not merely somewhere.
@@ -334,7 +333,7 @@ the same thing and only accepted one. **Check the test before you believe the
 result.**
 
 **8. Negative results are deliverables.**
-Three things were built, measured and *not* shipped: whole-corpus stuffing,
+I built, measured and did *not* ship three things: whole-corpus stuffing,
 BM25, hybrid fusion. The spec treats "which stages earned their place, and
 which didn't, with numbers" as the actual output of the project. In practice
 "we tried it, here's the number, we removed it" is more credible than a
@@ -342,7 +341,7 @@ system where every component is present and none is justified.
 
 ---
 
-## Things you can say confidently
+## The obvious questions, answered
 
 **"What is it?"** A RAG service over the OpenChat docs. It retrieves the five
 most relevant passages for a question, has an LLM answer strictly from those,
@@ -353,14 +352,14 @@ is scored on recall@5 and MRR without any LLM; answers are graded by a
 stronger model on four independent axes. Current numbers: recall@5 0.983,
 appropriate_refusal 0.940.
 
-**"Why not just put everything in the prompt?"** We did — it's the control,
+**"Why not just put everything in the prompt?"** I did — it's the control,
 and it scored 0.967 against retrieval's 0.983. Retrieval won on cost:
 93% fewer prompt tokens for equal quality.
 
 **"Why no vector database?"** 195 chunks is a numpy array and a matrix
 multiply. A vector DB would be infrastructure with nothing to do.
 
-**"Did you try hybrid search?"** Yes, and it made things worse — 0.915
+**"Did you try hybrid search?"** I did, and it made things worse — 0.915
 against 0.983. The embeddings already handled the jargon, so BM25 mostly
 added noise, and rank fusion weights both rankers equally.
 
